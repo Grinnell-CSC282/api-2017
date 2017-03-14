@@ -16,7 +16,7 @@
 #include "alilib.h"
 
 // +------------+----------------------------------------------------
-// | Procedures |
+// | Procedure  |
 // +------------+
 
 /**
@@ -35,4 +35,4 @@ ali2str (ALInt *a)
     }
 	// Return the new string
 	return ret;
-}
+} // ali2str

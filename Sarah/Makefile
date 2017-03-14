@@ -23,7 +23,7 @@ test: ./test-ali
 	./test-ali
 
 # The library
-libalilib.a: alilib-operations.o alilib-tolong.o alilib-tostring.o alilib-helpers.o alilib-free.o
+libalilib.a: alilib-operations.o alilib-tolong.o alilib-tostring.o alilib-helpers.o alilib-free.o alilib-init.o alilib-toali.o
 	ar -rv $(.TARGET) $(.ALLSRC)
 
 # Our application

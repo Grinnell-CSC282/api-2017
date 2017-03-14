@@ -55,7 +55,7 @@ find_signs(ALInt *a, ALInt *b)
 		}
 	}
 	return flag;
-}
+} // find_signs
 
 /**
  * Finds the bigger of two ALInts (in terms of length) and returns it
@@ -72,23 +72,7 @@ find_bigger(ALInt *a, ALInt *b)
 	{
 		return b;
 	}
-}
-
-/**
- * Creates a new ALInt from values for that integer.
- */
-ALInt * 
-alint_init(int new_ndigits, int new_sign, int new_digits[]) 
-{
-	// Declare a new arbitrarily long integer
-	ALInt * newALInt = (ALInt *) malloc (sizeof (ALInt));
-	// Assigning the values of the new integer to the struct	
-	newALInt->ndigits = new_ndigits;
-	newALInt->sign = new_sign;
-	memcpy(newALInt->digits, new_digits, new_ndigits * sizeof (int));
-	// Return the new struct
-	return newALInt;
-}
+} // find_bigger
 
 /**
  * Shifts an array of digits to get rid of any leading zeros and
@@ -108,4 +92,4 @@ remove_leading_zeroes(int array[], int arr_len)
 		}
 	}
 	return array;
-}
+} // remove_leading_zeroes

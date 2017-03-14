@@ -16,7 +16,7 @@
 #include "alilib.h"
 
 // +------------+----------------------------------------------------
-// | Procedures |
+// | Procedure  |
 // +------------+
 
 /**
@@ -28,4 +28,4 @@ ali_free (ALInt *i)
 {
 	free (i->digits);
 	free (i);
-}
+} // ali_free

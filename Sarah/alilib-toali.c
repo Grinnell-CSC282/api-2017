@@ -16,7 +16,7 @@
 #include "alilib.h"
 
 // +------------+----------------------------------------------------
-// | Procedures |
+// | Procedure  |
 // +------------+
 
 /**
@@ -59,4 +59,4 @@ int2ali (int i)
 	}
 	// Return the new struct
 	return alint_init (new_ndigits, new_sign, new_digits);
-}
+} // int2ali
