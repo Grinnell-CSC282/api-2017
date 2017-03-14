@@ -1,18 +1,22 @@
-
-
 #ifndef __API__
 #define __API__
-#include <stdint.h>
 
 #define BASE 10
 struct APInt
 {
-  size_t size;
   int sign;
-  unsigned char arr[16];
+  array_list list;
 };
 typedef struct APInt APInt;
-
+/**
+* apid_add, api_dub, api_mlt, api_dvd are the common arithemtic operations
+*   implemented for arbitrary precision numbers.
+* Each take to parameters.
+* In the case of subtraction, the second will be subtracted from the first.
+* In the case of division, the first will be divided by the second.
+* The function will terminate and return null incase b is the equivalent of
+*   zero.
+*/
 API * api_add (APInt *a, APInt *b);
 API * api_sub (APInt *a, APInt *b);
 API * api_mlt (APInt *a, APInt *b);
