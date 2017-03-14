@@ -96,13 +96,19 @@ char * ali2str (ALInt *a);
 int find_signs(ALInt *a, ALInt *b);
 
 /**
- * Finds the longer of two ALInts and returns that length
+ * Finds the bigger of two ALInts (by length) and returns it.
  */
-int find_longer_number(ALInt *a, ALInt *b);
+ALInt * find_bigger(ALInt *a, ALInt *b);
 
 /**
  * Creates a new ALInt from values for that integer.
  */
-ALInt * alint_init(int newNdigits, int newSign, int newDigits[]);
+ALInt * alint_init(int new_ndigits, int new_sign, int new_digits[]);
+
+/**
+ * Shifts an array of digits to get rid of any leading zeros and
+ * returns a new array without them
+ */
+int * remove_leading_zeroes(int array[], int arr_len);
 
 #endif // __ALILIB_H__

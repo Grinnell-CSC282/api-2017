@@ -19,15 +19,6 @@
 // | Procedures |
 // +------------+
 
-/*struct ALInt 
-  {
-    int ndigits;
-    int sign;       // 1 for positive, -1 for negative
-    int digits[];   // Each represents one base-16 digit
-  };
-typedef struct ALInt ALInt; */
-
-
 /**
  * Add two arbitrarily large integers, creating a newly allocated
  * arbitrarily large integer.  The client is responsible for freeing
@@ -36,10 +27,10 @@ typedef struct ALInt ALInt; */
 ALInt * 
 ali_add (ALInt *a, ALInt *b)
 {
-	int newNdigits = find_longer_number (a, b);
+	int new_ndigits = find_bigger (a, b)->ndigits;
 	int flag = find_signs (a, b);
-	int newSign = 0;
-	int newDigits[newNdigits + 1];
+	int new_sign = 0;
+	int new_digits[new_ndigits * 2];
 
 	// If subtracting instead of adding then go to ali_subtract
 	if (flag == 1)
@@ -55,28 +46,29 @@ ali_add (ALInt *a, ALInt *b)
 	{
 		if (flag == 4)
 		{
-			newSign = -1;
+			new_sign = -1;
 		}
 		else 
 		{
-			newSign = 1;
+			new_sign = 1;
 		}
 		int carry = 0;
 		// Add the integers together
-		for (int i = newNdigits - 1; i >= 0; i--)
+		for (int i = new_ndigits - 1; i >= 0; i--)
 		{
 			int sum = a->digits[i] + b->digits[i];
 			// Check for carry over in addition
-			if (sum > 9) {
+			if (sum > 9) 
+			{
 				carry += sum % 10;
 				sum = sum - carry;
 			}
 			// Setting new value in array of digits
-			newDigits[i] = sum + carry;
-			if (newDigits[i] > 9)
+			new_digits[i] = sum + carry;
+			if (new_digits[i] > 9)
 			{
-				carry = newDigits[i] % 10;
-				newDigits[i] = newDigits[i] - carry;
+				carry = new_digits[i] % 10;
+				new_digits[i] = new_digits[i] - carry;
 			}
 			else
 			{
@@ -85,19 +77,9 @@ ali_add (ALInt *a, ALInt *b)
 		}
 	}
 
-	// Check for a leading zero
-	if (newDigits[0] == 0) {
-		// Copy into a new array
-		int noLeadingZeroes[newNdigits];
-		for (int i = 1; i < newNdigits; i++)
-		{
-			noLeadingZeroes[i - 1] = newDigits[i];
-		}
-		memcpy(newDigits, noLeadingZeroes, newNdigits * sizeof (int));
-	}
-
 	// Return the new struct
-	return alint_init (newNdigits, newSign, newDigits);
+	return alint_init (new_ndigits, new_sign, 
+			remove_leading_zeroes(new_digits, new_ndigits * 2));
 }
 
 /**
@@ -108,10 +90,10 @@ ali_add (ALInt *a, ALInt *b)
 ALInt * 
 ali_subtract (ALInt *a, ALInt *b)
 {
-	int newNdigits = find_longer_number (a, b);
+	int new_ndigits = find_bigger (a, b)->ndigits;
 	int flag = find_signs (a, b);
-	int newSign = 0;
-	int newDigits[newNdigits + 1];
+	int new_sign = 0;
+	int new_digits[new_ndigits];
 
 	// If adding instead of subtracting then go to ali_add
 	if (flag == 0 || flag == 4)
@@ -121,21 +103,22 @@ ali_subtract (ALInt *a, ALInt *b)
 	else 
 	{
 		int carry = 0;
-		// Add the integers together
-		for (int i = newNdigits - 1; i >= 0; i--)
+		// Subtract the integers from one another
+		for (int i = new_ndigits - 1; i >= 0; i--)
 		{
-			int sum = a->digits[i] - b->digits[i];
-			// Check for carry over in addition
-			if (sum < a->digits[i]) {
-				carry += sum % 10;
-				sum = sum - carry;
+			int diff = a->digits[i] - b->digits[i];
+			// Check for carry over in subtraction
+			if (diff < a->digits[i]) 
+			{
+				carry += diff % 10;
+				diff = diff - carry;
 			}
 			// Setting new value in array of digits
-			newDigits[i] = sum + carry;
-			if (newDigits[i] > 9)
+			new_digits[i] = diff + carry;
+			if (new_digits[i] > 9)
 			{
-				carry = newDigits[i] % 10;
-				newDigits[i] = newDigits[i] - carry;
+				carry = new_digits[i] % 10;
+				new_digits[i] = new_digits[i] - carry;
 			}
 			else
 			{
@@ -144,7 +127,8 @@ ali_subtract (ALInt *a, ALInt *b)
 		}
 	}
 	// Return the new struct
-	return alint_init (newNdigits, newSign, newDigits);
+	return alint_init (new_ndigits, new_sign, 
+			remove_leading_zeroes(new_digits, new_ndigits));
 }
 
 /**
@@ -156,22 +140,49 @@ ALInt *
 ali_multiply (ALInt *a, ALInt *b)
 {
 	int flag = find_signs(a, b);
-	int newSign = 0;
+	int new_sign = 0;
+	int new_ndigits = find_bigger (a, b)->ndigits;;
+	int new_digits[new_ndigits * 2];
 
 	if (flag == 1 || flag == 4)
 	{
-		newSign = 1;
+		new_sign = 1;
 	}
 	else
 	{
-		newSign = -1;
+		new_sign = -1;
 	}
 
-	// Multiply the new integers together
-	
+	// Multiply the two integers together
+	int carry = 0;
+	for (int i = new_ndigits - 1; i >= 0; i--)
+	{
+		for(int j = new_ndigits - 1; j >= 0; j--)
+		{
+			int product = a->digits[i] * b->digits[j];
+			// Check for carry over in multiplication
+			if (product > 9) 
+			{
+				carry += product % 10;
+				product = product - carry;
+			}
+			// Setting new value in array of digits
+			new_digits[i] = product + carry;
+			if (new_digits[i] > 9)
+			{
+				carry = new_digits[i] % 10;
+				new_digits[i] = new_digits[i] - carry;
+			}
+			else
+			{
+				carry = 0;
+			}
+		}
+	}
 
 	// Return the new struct
-	//return alint_init (newNdigits, newSign, newDigits);
+	return alint_init (new_ndigits, new_sign, 
+			remove_leading_zeroes(new_digits, new_ndigits * 2));
 }
 
 /**
@@ -182,8 +193,6 @@ ali_multiply (ALInt *a, ALInt *b)
 ALInt * 
 ali_quotient (ALInt *a, ALInt *b)
 {
-	// Return the new struct
-	//return alint_init (newNdigits, newSign, newDigits);
 }
 
 /**
@@ -194,8 +203,6 @@ ali_quotient (ALInt *a, ALInt *b)
 ALInt * 
 ali_remainder (ALInt *a, ALInt *b)
 {
-	// Return the new struct
-	//return alint_init (newNdigits, newSign, newDigits);
 }
 
 /**
@@ -216,39 +223,39 @@ ALInt *
 int2ali (int i) 
 {
 	// Determine the sign of the new integer
-	int newSign = 0;
+	int new_sign = 0;
 	if (i < 0)
 	{
-		newSign = -1;
+		new_sign = -1;
 	}
 	else 
 	{
-		newSign = 1;
+		new_sign = 1;
 	}
 	// Find the number of digits of the new integer
-	int newNdigits = 0;
+	int new_ndigits = 0;
 	int n = i;
 	while (n != 0)
 	{
 		n /= 10;
-		newNdigits++;
+		new_ndigits++;
 	}
 	// Put the integer into the array
 	// Declare a new array for the new integer
-	int newDigits[newNdigits];
-	if (newNdigits != 0)
+	int new_digits[new_ndigits];
+	if (new_ndigits != 0)
 	{
 		n = i;
 		int j = 0;
 		while (n != 0)
 		{
-			newDigits[j] = n % 10;
+			new_digits[j] = n % 10;
 			n /= 10;
 			j++;
 		}
 	}
 	// Return the new struct
-	return alint_init (newNdigits, newSign, newDigits);
+	return alint_init (new_ndigits, new_sign, new_digits);
 }
 
  /**
@@ -269,9 +276,12 @@ char *
 ali2str (ALInt *a)
 {
 	// Malloc a new string
-	char * ret = malloc (sizeof (char) * a->ndigits);
+	char ret[a->ndigits + 1];
 	// Convert to string representation
-
+	int n = 0;
+	for (int i = 0; i < 5; i++) {
+        n += sprintf (&ret[n], "%d", a->digits[i]);
+    }
 	// Return the new string
 	return ret;
 }
@@ -315,36 +325,54 @@ find_signs(ALInt *a, ALInt *b)
 }
 
 /**
- * Finds the longer of two ALInts and returns that length
+ * Finds the bigger of two ALInts (in terms of length) and returns it
  */
-int
-find_longer_number(ALInt *a, ALInt *b)
+ALInt *
+find_bigger(ALInt *a, ALInt *b)
 {
-	int len = 0;
-	// Find the longer number
+	// Find the bigger number (in terms of length)
 	if (a->ndigits > b->ndigits)
 	{
-		len = a->ndigits;
+		return a;
 	}
 	else
 	{
-		len = b->ndigits;
+		return b;
 	}
-	return len;
 }
 
 /**
  * Creates a new ALInt from values for that integer.
  */
 ALInt * 
-alint_init(int newNdigits, int newSign, int newDigits[]) 
+alint_init(int new_ndigits, int new_sign, int new_digits[]) 
 {
 	// Declare a new arbitrarily long integer
 	ALInt * newALInt = (ALInt *) malloc (sizeof (ALInt));
 	// Assigning the values of the new integer to the struct	
-	newALInt->ndigits = newNdigits;
-	newALInt->sign = newSign;
-	memcpy(newALInt->digits, newDigits, newNdigits * sizeof (int));
+	newALInt->ndigits = new_ndigits;
+	newALInt->sign = new_sign;
+	memcpy(newALInt->digits, new_digits, new_ndigits * sizeof (int));
 	// Return the new struct
 	return newALInt;
+}
+
+/**
+ * Shifts an array of digits to get rid of any leading zeros and
+ * returns a new array without them
+ */
+int *
+remove_leading_zeroes(int array[], int arr_len)
+{
+	int new_len = arr_len;
+	// Shift to get rid of any leading zeros
+	while (array[0] == 0)
+	{
+		for (int i = 1; i < arr_len; i++) 
+		{
+			array[i-1] = array[i];
+			new_len--;
+		}
+	}
+	return array;
 }
