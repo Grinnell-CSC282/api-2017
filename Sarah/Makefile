@@ -34,6 +34,15 @@ ali: ali.o libalilib.a
 test-ali: test-ali.o libalilib.a
 	$(CC) $(.IMPSRC) $(LDLIBS) -o $(.TARGET)
 
+# Clean up
+clean:
+	rm -f *.o
+
+distclean: clean
+	rm -f libalilib.a
+	rm -f ali
+	rm -f test-ali
+
 # +-------------------------+----------------------------------------
 # | Additional Dependencies |
 # +-------------------------+
