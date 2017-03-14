@@ -1,6 +1,6 @@
 /**
- * ali-lib.c
- *   Library to handle standard operations on arbitrarily long integers
+ * alilib-operations.c
+ *    Standard operations on arbitrarily long integers for alilib.
  *
  * <insert appropriate open source license>
  */
@@ -13,7 +13,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-#include "ali-lib.h"
+#include "alilib.h"
 
 // +------------+----------------------------------------------------
 // | Procedures |
@@ -203,176 +203,4 @@ ali_quotient (ALInt *a, ALInt *b)
 ALInt * 
 ali_remainder (ALInt *a, ALInt *b)
 {
-}
-
-/**
- * Free the memory associated with an ALInt.  Afterwards,
- * i should no longer be used.
- */
-void 
-ali_free (ALInt *i)
-{
-	free (i->digits);
-	free (i);
-}
-
-/**
-  * Create a newly allocated ALInt whose value is i.
-  */
-ALInt * 
-int2ali (int i) 
-{
-	// Determine the sign of the new integer
-	int new_sign = 0;
-	if (i < 0)
-	{
-		new_sign = -1;
-	}
-	else 
-	{
-		new_sign = 1;
-	}
-	// Find the number of digits of the new integer
-	int new_ndigits = 0;
-	int n = i;
-	while (n != 0)
-	{
-		n /= 10;
-		new_ndigits++;
-	}
-	// Put the integer into the array
-	// Declare a new array for the new integer
-	int new_digits[new_ndigits];
-	if (new_ndigits != 0)
-	{
-		n = i;
-		int j = 0;
-		while (n != 0)
-		{
-			new_digits[j] = n % 10;
-			n /= 10;
-			j++;
-		}
-	}
-	// Return the new struct
-	return alint_init (new_ndigits, new_sign, new_digits);
-}
-
- /**
- * Find the long that corresponds to a.  If a > LONG_MAX,
- * returns LONG_MAX.  If a < LONG_MIN, returns LONG_MIN.
- */
-long 
-ali2long (ALInt *a)
-{
-
-}
-
-/**
- * Convert a to string representation.  Returns a newly-allocated
- * string.
- */
-char * 
-ali2str (ALInt *a)
-{
-	// Malloc a new string
-	char ret[a->ndigits + 1];
-	// Convert to string representation
-	int n = 0;
-	for (int i = 0; i < 5; i++) {
-        n += sprintf (&ret[n], "%d", a->digits[i]);
-    }
-	// Return the new string
-	return ret;
-}
-
-/**
- * Determine whether the signs of a and b are the same or different.
- * Returns an integer indicating --
- * 0: +a + b
- * 1: +a - b
- * 2: -a + b
- * 3: -a - b
- */
-int 
-find_signs(ALInt *a, ALInt *b)
-{
-	int flag = 0;
-	// Determine if adding or subtracting
-	if (a->sign == b->sign)
-	{
-		if (a->sign == 1)
-		{
-			flag = 0;
-		}
-		else 
-		{
-			flag = 3;
-		}
-	}
-	else
-	{
-		if (a->sign == 1)
-		{
-			flag = 1;
-		}
-		else 
-		{
-			flag = 2;
-		}
-	}
-	return flag;
-}
-
-/**
- * Finds the bigger of two ALInts (in terms of length) and returns it
- */
-ALInt *
-find_bigger(ALInt *a, ALInt *b)
-{
-	// Find the bigger number (in terms of length)
-	if (a->ndigits > b->ndigits)
-	{
-		return a;
-	}
-	else
-	{
-		return b;
-	}
-}
-
-/**
- * Creates a new ALInt from values for that integer.
- */
-ALInt * 
-alint_init(int new_ndigits, int new_sign, int new_digits[]) 
-{
-	// Declare a new arbitrarily long integer
-	ALInt * newALInt = (ALInt *) malloc (sizeof (ALInt));
-	// Assigning the values of the new integer to the struct	
-	newALInt->ndigits = new_ndigits;
-	newALInt->sign = new_sign;
-	memcpy(newALInt->digits, new_digits, new_ndigits * sizeof (int));
-	// Return the new struct
-	return newALInt;
-}
-
-/**
- * Shifts an array of digits to get rid of any leading zeros and
- * returns a new array without them
- */
-int *
-remove_leading_zeroes(int array[], int arr_len)
-{
-	int new_len = arr_len;
-	// Shift to get rid of any leading zeros
-	while (array[0] == 0)
-	{
-		for (int i = 1; i < arr_len; i++) 
-		{
-			array[i-1] = array[i];
-			new_len--;
-		}
-	}
-	return array;
 }

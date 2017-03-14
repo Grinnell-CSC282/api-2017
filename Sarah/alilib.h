@@ -1,5 +1,5 @@
 /** 
- * 	ali-lib.h
+ * 	alilib.h
  *  	a library that handles arbitrarily large integers 
  *  	
  * Function declarations by Sam Rebelsky 

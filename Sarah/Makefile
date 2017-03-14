@@ -7,7 +7,7 @@
 
 CC = gcc
 CFLAGS = -Wall -g
-LDLIBS = -L. -lmathlib
+LDLIBS = -L. -lalilib
 
 # More readable versions of the automatic variables
 .TARGET = $@
@@ -19,23 +19,23 @@ LDLIBS = -L. -lmathlib
 # +---------+
 
 # Our tests
-test: ./test-lib
-    ./test-lib
+test: ./test-ali
+	./test-ali
 
 # The library
-ali-lib.a: mathlib-gcd.o mathlib-str2long.o
-    ar -rv $(.TARGET) $(.ALLSRC)
+libalilib.a: alilib-operations.o alilib-tolong.o alilib-tostring.o alilib-helpers.o alilib-free.o
+	ar -rv $(.TARGET) $(.ALLSRC)
 
 # Our application
-ali: ali.o ali-lib.a
-    $(CC) $(.IMPSRC) $(LDLIBS) -o $(.TARGET)
+ali: ali.o libalilib.a
+	$(CC) $(.IMPSRC) $(LDLIBS) -o $(.TARGET)
 
 # Our tests
-test-ali: test-ali.o ali-lib.a
-    $(CC) $(.IMPSRC) $(LDLIBS) -o $(.TARGET)
+test-ali: test-ali.o libalilib.a
+	$(CC) $(.IMPSRC) $(LDLIBS) -o $(.TARGET)
 
 # +-------------------------+----------------------------------------
 # | Additional Dependencies |
 # +-------------------------+
 
-*.o: mathlib.h
+*.o: alilib.h
