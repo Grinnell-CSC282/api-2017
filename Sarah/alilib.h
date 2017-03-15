@@ -27,24 +27,28 @@ typedef struct ALInt ALInt;
 // | Constants |
 // +-----------+
 
-#define LONG_MAX 100000000.0
-#define LONG_MIN 100000000.0
-#define INT_MAX 100000000
-#define INT_MIN 100000000
-#define DOUBLE_MAX 100000000.0
-#define DOUBLE_MIN 100000000.0
+#define LONG_MAX 100000.0
+#define LONG_MIN 100000.0
+
+#define INT_MAX 100000
+#define INT_MIN 100000
+
+#define DOUBLE_MAX 100000.0
+#define DOUBLE_MIN 100000.0
 
 // +------------+----------------------------------------------------
 // | Procedures |
 // +------------+
 
 /**
- * Initializes the library
+ * Initializes the library. The client must run this procedure before
+ * using the library.
  */
 void ali_init();
 
 /**
- * Cleans up all memory that may have been allocated.
+ * Cleans up all memory that may have been allocated. The client must run
+ * this procedure when they are finished using the library.
  */
 void ali_cleanup();
 

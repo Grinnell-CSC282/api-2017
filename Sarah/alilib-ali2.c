@@ -27,7 +27,19 @@
 long 
 ali2long (ALInt *a)
 {
-	return atol (ali2str (a));
+	long l = atol (ali2str (a));
+	if (l > LONG_MAX)
+	{
+		return LONG_MAX;
+	}
+	else if (l < LONG_MIN)
+	{
+		return LONG_MIN;
+	}
+	else
+	{
+		return l;
+	}
 } // ali2long
 
  /**
@@ -37,7 +49,19 @@ ali2long (ALInt *a)
 double 
 ali2double (ALInt *a)
 {
-	return atof (ali2str (a));
+	double d = atof (ali2str (a));
+	if (d > DOUBLE_MAX)
+	{
+		return DOUBLE_MAX;
+	}
+	else if (d < DOUBLE_MIN)
+	{
+		return DOUBLE_MIN;
+	}
+	else
+	{
+		return d;
+	}
 } // ali2double
 
  /**
@@ -47,7 +71,19 @@ ali2double (ALInt *a)
 int 
 ali2int (ALInt *a)
 {
-	return atoi (ali2str (a));
+	int i = atoi (ali2str (a));
+	if (i > INT_MAX)
+	{
+		return INT_MAX;
+	}
+	else if (i < INT_MIN)
+	{
+		return INT_MIN;
+	}
+	else
+	{
+		return i;
+	}
 } // ali2int
 
 /**

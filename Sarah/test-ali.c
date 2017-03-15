@@ -20,6 +20,10 @@
 int
 main ()
 {
+	// Initialize library
+	ali_init();
+
+	// Initialize sample values
 	ALInt * int_2034 = int2ali (2034);
 	ALInt * int_1234567 = int2ali (-1234567);
 	ALInt * int_5 = int2ali (5);
@@ -78,6 +82,9 @@ main ()
 	ali_free (int_1234567);
 	ali_free (int_5);
 	ali_free (int_12);
+
+	// Cleanup
+	ali_cleanup();
 	
 	// Done with tests, return
 	return 0;
