@@ -9,6 +9,7 @@ APInt * int2api (int i){
   }
   else {
     api->sign = negative;
+    i *= -1;
   }
   api->list = array_list_init();
   while (i != 0){

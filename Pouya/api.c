@@ -29,7 +29,7 @@
 #include "api.h"
 
 int main(int argc, char const *argv[]) {
-  APInt  * api = int2api(1234);
+  APInt  * api = int2api(-1234);
   for (int i = 0; i < api->list->size; i++){
     printf("%d\n",api->list->array[i]);
   }

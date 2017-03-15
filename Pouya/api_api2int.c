@@ -10,5 +10,10 @@ int api2int (APInt * i){
     ret += power * i->list->array[j];
     power *= BASE;
   }
-  return ret;
+  if (!i->sign){
+    return ret;
+  }
+  else {
+  return -ret;
+  }
 }
