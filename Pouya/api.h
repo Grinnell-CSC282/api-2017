@@ -11,8 +11,10 @@ enum int_sign{
 
 struct APInt
 {
+  int base;
   enum int_sign sign;
   array_list * list;
+  array_list * p_list;
 };
 typedef struct APInt APInt;
 /**
@@ -28,7 +30,7 @@ APInt * api_add (APInt *a, APInt *b);
 APInt * api_sub (APInt *a, APInt *b);
 APInt * api_mlt (APInt *a, APInt *b);
 APInt * api_dvd (APInt *a, APInt *b);
-APInt * str2api (char * i[]);
+APInt * str2api (char * i);
 APInt * int2api (int i);
 APInt * long2api (long i);
 APInt * double2api (double i);

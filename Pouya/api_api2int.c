@@ -8,7 +8,7 @@ int api2int (APInt * i){
   int power = 1;
   for (int j = 0; j < i->list->size; j++){
     ret += power * i->list->array[j];
-    power *= BASE;
+    power *= i->base;
   }
   if (!i->sign){
     return ret;

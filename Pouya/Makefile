@@ -13,7 +13,8 @@ main: api
 
 # libraries
 libarray_operations.a: array_operations_addLast.o array_operations_free.o \
-	array_operations_init.o api_int2api.o api_free.o api_api2int.o
+	array_operations_init.o api_int2api.o api_free.o api_api2int.o \
+	api_str2api.o
 	ar -rv $@ $^
 
 #libapi.a: api_int2api.o api_free.o api_api2int.o api.h
