@@ -13,7 +13,6 @@ struct array_list{
 typedef struct array_list array_list;
 
 array_list * array_list_init();
-void ensure_capacity(array_list * list);
 void add_last(array_list * list, char val);
 void free_list(array_list * list);
 
