@@ -26,14 +26,13 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "array_operations.h"
+#include "api.h"
 
 int main(int argc, char const *argv[]) {
-  array_list  * arr = array_list_init();
-  for (int i = 0; i < 100; i++){
-    add_last(arr, i);
+  APInt  * api = int2api(-1234);
+  for (int i = 0; i < api->list->size; i++){
+    printf("%d\n",api->list->array[i]);
   }
-  for (int i = 0; i < 100; i++){
-    printf("%d ", arr->array[i]);
-  }
-  free_list(arr);
+  printf("%d\n", api2int(api));
+  api_free(api);
 }
