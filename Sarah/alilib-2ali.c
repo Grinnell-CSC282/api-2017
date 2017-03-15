@@ -1,6 +1,7 @@
 /**
  * alilib-toali.c
- *    Converts an integer to an arbitrarily long integer for alilib.
+ *    Converts another format (string, integer, double, long)
+ *    to an arbitrarily long integer for alilib.
  *
  * <insert appropriate open source license>
  */
@@ -58,5 +59,36 @@ int2ali (int i)
 		}
 	}
 	// Return the new struct
-	return alint_init (new_ndigits, new_sign, new_digits);
+	return ali_new (new_ndigits, new_sign, new_digits);
 } // int2ali
+
+/**
+  * Create a newly allocated ALInt whose value is i.
+  */
+ ALInt * 
+ str2ali (char * s)
+ {
+ 	return int2ali (atoi (*s));
+ } // str2ali
+
+ /**
+  * Create a newly allocated ALInt whose value is i.
+  */
+ ALInt * 
+ long2ali (long l)
+ {
+ 	char buffer[50];
+ 	sprintf (buffer, "%lu", l);
+ 	return str2ali (buffer);
+ } //long2ali
+
+/**
+  * Create a newly allocated ALInt whose value is i.
+  */
+ ALInt * 
+ double2ali (double d)
+ {
+ 	char buffer[50];
+ 	sprintf (buffer, "%f", d);
+ 	return str2ali (buffer);
+ } //double2ali

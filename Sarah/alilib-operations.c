@@ -78,7 +78,7 @@ ali_add (ALInt *a, ALInt *b)
 	}
 
 	// Return the new struct
-	return alint_init (new_ndigits, new_sign, 
+	return ali_new (new_ndigits, new_sign, 
 			remove_leading_zeroes(new_digits, new_ndigits * 2));
 }
 
@@ -127,7 +127,7 @@ ali_subtract (ALInt *a, ALInt *b)
 		}
 	}
 	// Return the new struct
-	return alint_init (new_ndigits, new_sign, 
+	return ali_new (new_ndigits, new_sign, 
 			remove_leading_zeroes(new_digits, new_ndigits));
 }
 
@@ -157,31 +157,13 @@ ali_multiply (ALInt *a, ALInt *b)
 	int carry = 0;
 	for (int i = new_ndigits - 1; i >= 0; i--)
 	{
-		for(int j = new_ndigits - 1; j >= 0; j--)
-		{
-			int product = a->digits[i] * b->digits[j];
-			// Check for carry over in multiplication
-			if (product > 9) 
-			{
-				carry += product % 10;
-				product = product - carry;
-			}
-			// Setting new value in array of digits
-			new_digits[i] = product + carry;
-			if (new_digits[i] > 9)
-			{
-				carry = new_digits[i] % 10;
-				new_digits[i] = new_digits[i] - carry;
-			}
-			else
-			{
-				carry = 0;
-			}
-		}
+		// Allocate an array to hold the multiplied values
+		// Multiply through across the bigger number
+		// Add all of the arrays together
 	}
 
 	// Return the new struct
-	return alint_init (new_ndigits, new_sign, 
+	return ali_new (new_ndigits, new_sign, 
 			remove_leading_zeroes(new_digits, new_ndigits * 2));
 }
 

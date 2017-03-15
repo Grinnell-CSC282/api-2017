@@ -1,6 +1,6 @@
 /**
- * alilib-init.c
- *    Initialization functions for arbitrarily long integers for alilib.
+ * alilib-standard.c
+ *    Standard and necessary procedures for alilib.
  *
  * <insert appropriate open source license>
  */
@@ -16,14 +16,43 @@
 #include "alilib.h"
 
 // +------------+----------------------------------------------------
-// | Procedure  |
+// | Procedures |
 // +------------+
+
+/**
+ * Initializes the library
+ */
+void 
+ali_init()
+{
+
+} // ali_init
+
+/**
+ * Cleans up all memory that may have been allocated.
+ */
+void 
+ali_cleanup()
+{
+
+} // ali_cleanup
+
+/**
+ * Free the memory associated with an ALInt.  Afterwards,
+ * i should no longer be used.
+ */
+void 
+ali_free (ALInt *i)
+{
+	free (i->digits);
+	free (i);
+} // ali_free
 
 /**
  * Creates a new ALInt from values for that integer.
  */
 ALInt * 
-alint_init(int new_ndigits, int new_sign, int new_digits[]) 
+ali_new(int new_ndigits, int new_sign, int new_digits[]) 
 {
 	// Declare a new arbitrarily long integer
 	ALInt * newALInt = (ALInt *) malloc (sizeof (ALInt));

@@ -23,9 +23,41 @@ struct ALInt
   };
 typedef struct ALInt ALInt;
 
+// +-----------+-----------------------------------------------------
+// | Constants |
+// +-----------+
+
+#define LONG_MAX 100000000.0
+#define LONG_MIN 100000000.0
+#define INT_MAX 100000000
+#define INT_MIN 100000000
+#define DOUBLE_MAX 100000000.0
+#define DOUBLE_MIN 100000000.0
+
 // +------------+----------------------------------------------------
 // | Procedures |
 // +------------+
+
+/**
+ * Initializes the library
+ */
+void ali_init();
+
+/**
+ * Cleans up all memory that may have been allocated.
+ */
+void ali_cleanup();
+
+/**
+ * Free the memory associated with an ALInt.  Afterwards,
+ * i should no longer be used.
+ */
+void ali_free (ALInt *i); 
+
+/**
+ * Creates a new ALInt from values for that integer.
+ */
+ALInt * ali_new(int new_ndigits, int new_sign, int new_digits[]);
 
 /**
  * Add two arbitrarily large integers, creating a newly allocated
@@ -63,21 +95,42 @@ ALInt * ali_quotient (ALInt *a, ALInt *b);
 ALInt * ali_remainder (ALInt *a, ALInt *b);
 
 /**
- * Free the memory associated with an ALInt.  Afterwards,
- * i should no longer be used.
+ * Create a newly allocated ALInt whose value is i.
  */
-void ali_free (ALInt *i); 
+ALInt * int2ali (int i);
 
 /**
-  * Create a newly allocated ALInt whose value is i.
-  */
- ALInt * int2ali (int i);
+ * Create a newly allocated ALInt whose value is i.
+ */
+ALInt * str2ali (char * s);
 
- /**
+/**
+ * Create a newly allocated ALInt whose value is i.
+ */
+ALInt * long2ali (long l);
+
+/**
+ * Create a newly allocated ALInt whose value is i.
+ */
+ALInt * double2ali (double d);
+
+/**
  * Find the long that corresponds to a.  If a > LONG_MAX,
  * returns LONG_MAX.  If a < LONG_MIN, returns LONG_MIN.
  */
 long ali2long (ALInt *a);
+
+/**
+ * Find the double that corresponds to a.  If a > DOUBLE_MAX,
+ * returns DOUBLE_MAX.  If a < DOUBLE_MIN, returns DOUBLE_MIN.
+ */
+double ali2double (ALInt *a);
+
+/**
+ * Find the int that corresponds to a.  If a > INT_MAX,
+ * returns INT_MAX.  If a < INT_MIN, returns INT_MIN.
+ */
+int ali2int (ALInt *a);
 
 /**
  * Convert a to string representation.  Returns a newly-allocated
@@ -99,11 +152,6 @@ int find_signs(ALInt *a, ALInt *b);
  * Finds the bigger of two ALInts (by length) and returns it.
  */
 ALInt * find_bigger(ALInt *a, ALInt *b);
-
-/**
- * Creates a new ALInt from values for that integer.
- */
-ALInt * alint_init(int new_ndigits, int new_sign, int new_digits[]);
 
 /**
  * Shifts an array of digits to get rid of any leading zeros and
