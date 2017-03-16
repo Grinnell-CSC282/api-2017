@@ -94,7 +94,7 @@ char *
 ali2str (ALInt *a)
 {
 	// Malloc a new string
-	char ret[a->ndigits + 1];
+	char * ret = malloc (sizeof (char) * a->ndigits + 1);
 	if (a->sign == -1)
 	{
 		ret[0] = '-';
@@ -103,11 +103,10 @@ ali2str (ALInt *a)
 	{
 		ret[0] = ' ';
 	}
-	// Convert to string representation
-	int n = 0;
 	for (int i = 1; i < 5; i++) {
-        n += sprintf (&ret[n], "%d", a->digits[i]);
+        ret[i] = a->digits[i];
     }
+    ret += '\0';
 	// Return the new string
 	return ret;
 } // ali2str
