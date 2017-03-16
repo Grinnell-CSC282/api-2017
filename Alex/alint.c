@@ -146,7 +146,7 @@ char *
 ali2str (ALInt * a)
 {
   int strlen = a->length + (a->nonnegative ? 0 : 1);
-  char *str = malloc (strlen * sizeof (char));
+  char *str = malloc ((strlen + 1) * sizeof (char));
   ALIntDigit *cur = a->head;
   int i = 0;
   if (!a->nonnegative)
