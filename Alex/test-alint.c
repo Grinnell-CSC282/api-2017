@@ -9,6 +9,8 @@ void
 testNormalInt() {
   ALInt *i = str2ali("100"); 
   assert( ali2int(i) == 100 );
+  assert( ali2double(i) == 100.0 );
+  assert( ali2long(i) == 100.0 );
 
   char *str = ali2str(i);
   assert (strcmp(str,"100") == 0);
@@ -20,6 +22,35 @@ testNormalInt() {
 void testNegativeInt() {
   ALInt *i = str2ali("-100"); 
   assert( ali2int(i) == -100 );
+  assert( ali2double(i) == -100.0 );
+  assert( ali2long(i) == -100.0 );
+
+  char *str = ali2str(i);
+  assert (strcmp(str,"-100") == 0);
+
+  ali_free(i);
+  free(str);
+}
+
+void 
+testNormalDouble() {
+  ALInt *i = double2ali(100.0); 
+  assert( ali2int(i) == 100 );
+  assert( ali2double(i) == 100.0 );
+  assert( ali2long(i) == 100.0 );
+
+  char *str = ali2str(i);
+  assert (strcmp(str,"100") == 0);
+
+  ali_free(i);
+  free(str);
+}
+
+void testNegativeDouble() {
+  ALInt *i = double2ali(-100.0); 
+  assert( ali2int(i) == -100 );
+  assert( ali2double(i) == -100.0 );
+  assert( ali2long(i) == -100.0 );
 
   char *str = ali2str(i);
   assert (strcmp(str,"-100") == 0);
@@ -58,4 +89,6 @@ main (int argc, char *argv[])
   testLargeInt();
   testNegativeInt();
   testNegativeLargeInt();
+  testNormalDouble();
+  testNegativeDouble();
 }

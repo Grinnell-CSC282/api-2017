@@ -2,7 +2,7 @@
 
 #include <limits.h>
 #include <stdlib.h>
-
+#include <stdio.h>
 
 const int E[] = {
   0,
@@ -16,6 +16,7 @@ const int E[] = {
   100000000,
   1000000000,
   };
+
 ALInt *
 ali_add (ALInt * a, ALInt * b)
 {
@@ -63,6 +64,9 @@ ALInt *long2ali (long l) {
 ALInt *
 int2ali (int i)
 {
+  char str[15]; // INT_MAX is less than 15 characters wide
+  sprintf(str,"%d",i);
+  return str2ali(str);
 }
 
 ALIntDigit *str2ali_k (char *str, ALIntDigit *last, int *length, ALIntDigit **tail) {
@@ -90,15 +94,14 @@ ALInt *str2ali (char *str) {
   return i;
 }
 
-
 long
 ali2long (ALInt * a)
 {
-
+  return (long)ali2int(a);
 }
 
 double ali2double (ALInt * a) {
-
+  return (double)ali2int(a);
 }
 
 int ali2int (ALInt * a)
