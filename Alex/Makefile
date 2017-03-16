@@ -1,7 +1,10 @@
 CC := clang
 CFLAGS ?= -g --std=c11 
 
-test: test-alint.o alint.o
+test: test-alint
+	./test-alint
+
+test-alint: test-alint.o alint.o
 	@$(CC) $(CFLAGS) -MMD -MP -o test-alint test-alint.o alint.o
 
 clean:

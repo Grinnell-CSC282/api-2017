@@ -22,10 +22,22 @@ ali_add (ALInt * a, ALInt * b)
 
 }
 
-ALInt *ali_subtract (ALInt * a, ALInt * b);
-ALInt *ali_multiply (ALInt * a, ALInt * b);
-ALInt *ali_quotient (ALInt * a, ALInt * b);
-ALInt *ali_remainder (ALInt * a, ALInt * b);
+ALInt *ali_subtract (ALInt * a, ALInt * b) {
+
+}
+
+ALInt *ali_multiply (ALInt * a, ALInt * b) {
+
+}
+
+ALInt *ali_quotient (ALInt * a, ALInt * b) {
+
+}
+
+ALInt *ali_remainder (ALInt * a, ALInt * b) {
+
+}
+
 void
 ali_free (ALInt * i)
 {
@@ -40,9 +52,13 @@ ali_free (ALInt * i)
   free (i);
 }
 
-ALInt *double2ali (double d);
+ALInt *double2ali (double d) {
+  return int2ali((int)d);
+}
 
-ALInt *long2ali (long l);
+ALInt *long2ali (long l) {
+  return int2ali((int)l);
+}
 
 ALInt *
 int2ali (int i)
@@ -81,7 +97,9 @@ ali2long (ALInt * a)
 
 }
 
-double ali2double (ALInt * a);
+double ali2double (ALInt * a) {
+
+}
 
 int ali2int (ALInt * a)
  {
@@ -89,26 +107,33 @@ int ali2int (ALInt * a)
   int power = 0;
   ALIntDigit *cur = a->tail;
   while (sum < INT_MAX && sum >= 0) { // If integer overflow, sum will go negative
-    if (!cur) return sum;
+    if (!cur) return (a->nonnegative ? sum : -sum);
     int val = (int)cur->val - '0';
     sum += E[power] * val;
 
     power++;
     cur = cur->prev;
   }
-  return INT_MAX;
+  return (a->nonnegative ? INT_MAX : -INT_MAX);
  }
 
 char *
 ali2str (ALInt * a)
 {
-  char *str = malloc ((a->length + 1) * sizeof (char));
+  int strlen = a->length + (a->nonnegative ? 0 : 1);
+  char *str = malloc (strlen * sizeof (char));
   ALIntDigit *cur = a->head;
-  for (int i = 0; i < a->length; i++)
+  int i = 0;
+  if (!a->nonnegative) {
+    str[i] = '-'; 
+    i++;
+  }
+  while (i < strlen)
     {
       str[i] = cur->val;
       cur = cur->next;
+      i++;
     }
-  str[a->length] = '\0';
+  str[strlen] = '\0';
   return str;
 }
