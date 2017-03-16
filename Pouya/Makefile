@@ -2,7 +2,7 @@
 
 CC = gcc
 CFLAGS = -g -Wall
-LDLIBS = -L. -larray_operations #-lapi
+LDLIBS = -L. -lapi -larray_operations
 
 # main method
 main: api
@@ -13,14 +13,15 @@ main: api
 
 # libraries
 libarray_operations.a: array_operations_addLast.o array_operations_free.o \
-	array_operations_init.o api_int2api.o api_free.o api_api2int.o \
-	api_str2api.o
-	ar -rv $@ $^
+	array_operations_init.o
+	rm -f $@
+	ar rv $@ $^
 
-#libapi.a: api_int2api.o api_free.o api_api2int.o api.h
-#	ar -rv $@ $^ $(LDLIBS)
+libapi.a: api_int_trans.o api_free.o  api_str_trans.o api_operands.o
+	rm -f $@
+	ar rv $@ $^
 
-api: api.c libarray_operations.a #libapi.a
+api: api.c libapi.a libarray_operations.a
 	$(CC) $(CCFLAGS) $< $(LDLIBS) -o $@
 # clean up
 clean:

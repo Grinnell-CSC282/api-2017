@@ -2,13 +2,14 @@
 #include "array_operations.h"
 #include "api.h"
 
-
+/**
+* Function to free an APInt
+*/
 void api_free(APInt *i){
-  if (i->list != NULL){
-    free_list(i->list);
+  if (i != NULL){
+    if (i->list != NULL){
+      free_list(i->list);
+    }
+    free(i);
   }
-  if (i->p_list != NULL){
-    free_list(i->p_list);
-  }
-  free(i);
 }

@@ -29,12 +29,13 @@
 #include "api.h"
 
 int main(int argc, char const *argv[]) {
-  APInt  * api = str2api("-3242");
-  if (api->sign == negative){
-    printf("negative\n");
-  }
-  for (int i = 0; i < api->list->size ; i++){
-    printf("%d\n", api->list->array[i]);
-  }
-  api_free(api);
+  APInt * api1 = str2api("123");
+  APInt * api2 = str2api("356");
+  APInt * api3 = api_add(api2, api1);
+  printf("%d\n", api2int(api1));
+  printf("%d\n", api2int(api2));
+  printf("%d\n", api2int(api3));
+  api_free(api1);
+  api_free(api2);
+  api_free(api3);
 }

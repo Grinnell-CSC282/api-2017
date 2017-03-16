@@ -11,10 +11,8 @@ enum int_sign{
 
 struct APInt
 {
-  int base;
   enum int_sign sign;
   array_list * list;
-  array_list * p_list;
 };
 typedef struct APInt APInt;
 /**
