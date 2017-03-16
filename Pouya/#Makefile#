@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CC = gcc --std=c11
+CC = gcc --stdC11
 CFLAGS = -g -Wall
 LDLIBS = -L. -lapi -larray_operations
 
@@ -25,4 +25,4 @@ api: api.c libapi.a libarray_operations.a
 	$(CC) $(CCFLAGS) $< $(LDLIBS) -o $@
 # clean up
 clean:
-	rm -f *.o *.c~ api
+	rm -f *.o
