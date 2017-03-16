@@ -3,55 +3,78 @@
 #include "api.h"
 #include "array_operations.h"
 //Programed implemented for base 10 at the moment
-APInt * str2api (char * i){
+APInt *
+str2api (char *i)
+{
   int index = 0;
   char sign = '+';
   // finds the sign if one exists
-  if (i[0] == '+'){
-    index++;
-  }
-  else if (i[0] == '-'){
-    index++;
-    sign = '-';
-  }
-  for (; '\0' != i[index] && isdigit(i[index]); index++);
+  if (i[0] == '+')
+    {
+      index++;
+    }
+  else if (i[0] == '-')
+    {
+      index++;
+      sign = '-';
+    }
+  for (; '\0' != i[index] && isdigit (i[index]); index++);
   // if the given string is an integer.
   if ('\0' == i[index])
-  {
-    index--;
-    APInt * api  = (APInt * ) malloc(sizeof(APInt));
-    if (sign == '+'){
-      api->sign = positive;
-    }
-    else if (sign == '-')
     {
-      api->sign = negative;
+      index--;
+      APInt *api = (APInt *) malloc (sizeof (APInt));
+      if (sign == '+')
+	{
+	  api->sign = positive;
+	}
+      else if (sign == '-')
+	{
+	  api->sign = negative;
+	}
+      api->list = array_list_init ();
+      for (; index > -1 && isdigit (i[index]); index--)
+	{
+	  add_last (api->list, i[index] - '0');
+	}
+      return api;
     }
-    api->list = array_list_init();
-    for(; index > -1 && isdigit(i[index]) ; index--)
-    {
-      add_last(api->list, i[index]-'0');
-    }
-    return api;
-  }
   // if the given string is illegal
   else
-  {
-    printf("Illegal characters exist in the given string\n");
-    return NULL;
-  }
+    {
+      printf ("Illegal characters exist in the given string\n");
+      return NULL;
+    }
 
 }
 
-char * api2str (APInt * i){
-  char * ret = (char *) malloc(sizeof(char) * (i->list->size));
+char *
+api2str (APInt * i)
+{
+  if (i->list->size == 0)
+    {
+      char *ret = (char *) malloc (sizeof (char));
+      ret[0] = '\0';
+      return ret;
+    }
+  char *ret = (char *) malloc (sizeof (char) * ((i->list->size) + 2));
   int j = 0;
-  for (int k = i->list->size - 1; k > -1; k--)
-  {
-    ret[k] = i->list->array[j++] + '0';
-  }
+  if (i->sign == positive)
+    {
+      ret[0] = '+';
+    }
+  else
+    {
+      ret[0] = '-';
+    }
+  for (int k = i->list->size; k > 0; k--)
+    {
+      ret[k] = i->list->array[j++] + '0';
+    }
+  ret[j] = '\0';
   return ret;
 }
+
 /*APInt * str2api (char * i){
   int index = 0;
   char sign = '+';

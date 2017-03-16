@@ -39,6 +39,9 @@ double api2double (APInt * i);
 void api_init();
 void api_cleanup();
 void api_free(APInt *i);
+int api_compare(APInt *a, APInt *b);
+APInt * api_sub_helper (APInt *a, APInt *b, int normal);
+APInt * api_add_helper (APInt *a, APInt *b, int normal);
 
 
 #endif // __API__

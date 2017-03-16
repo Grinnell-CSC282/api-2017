@@ -5,7 +5,9 @@
 #include <stdlib.h>
 #include "array_operations.h"
 
-void free_list(array_list * list){
-  free(list->array);
-  free(list);
+void
+free_list (array_list * list)
+{
+  free (list->array);
+  free (list);
 }

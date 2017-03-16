@@ -5,11 +5,15 @@
 /**
 * Function to free an APInt
 */
-void api_free(APInt *i){
-  if (i != NULL){
-    if (i->list != NULL){
-      free_list(i->list);
+void
+api_free (APInt * i)
+{
+  if (i != NULL)
+    {
+      if (i->list != NULL)
+	{
+	  free_list (i->list);
+	}
+      free (i);
     }
-    free(i);
-  }
 }
