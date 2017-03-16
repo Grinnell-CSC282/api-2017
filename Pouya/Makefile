@@ -25,5 +25,4 @@ api: api.c libapi.a libarray_operations.a
 	$(CC) $(CCFLAGS) $< $(LDLIBS) -o $@
 # clean up
 clean:
-	rm -f *.o
-        rm -f *.c~
+	rm -f *.o *.c~ api

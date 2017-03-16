@@ -53,8 +53,9 @@ api2str (APInt * i)
 {
   if (i->list->size == 0)
     {
-      char *ret = (char *) malloc (sizeof (char));
-      ret[0] = '\0';
+      char *ret = (char *) malloc (sizeof (char) * 2);
+      ret[0] = '0';
+      ret[1] = '\0';
       return ret;
     }
   char *ret = (char *) malloc (sizeof (char) * ((i->list->size) + 2));
@@ -71,7 +72,7 @@ api2str (APInt * i)
     {
       ret[k] = i->list->array[j++] + '0';
     }
-  ret[j] = '\0';
+  ret[++j] = '\0';
   return ret;
 }
 
