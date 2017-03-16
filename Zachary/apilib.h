@@ -16,6 +16,15 @@ typedef struct ap_int {
   int stub;
 } APInt;
 
+// +-----------+---------------------------------------------
+// | Constants |
+// +-----------+
+
+APInt API_ZERO;
+APInt API_ONE;
+APInt API_TWO;
+APInt API_NEG_ONE;
+
 // +-------------------+---------------------------------------------
 // | Library Functions |
 // +-------------------+
@@ -31,47 +40,6 @@ void api_init();
  * is exited.
  */
 void api_cleanup();
-
-// +-----------+-----------------------------------------------------
-// | Operators |
-// +-----------+
-
-/**
- * Add two arbitrarily large integers, creating a newly allocated
- * arbitrarily large integer.  The client is responsible for freeing
- * any memory associated with the new value using ali_free.
- */
-APInt * api_add (APInt *a, APInt *b);
-
-/**
- * Subtract two arbitrarily large integers, creating a newly allocated
- * arbitrarily large integer.  The client is responsible for freeing
- * any memory associated with the new value using ali_free.
- */
-APInt * api_subtract (APInt *a, APInt *b);
-
-/**
- * Multiply two arbitrarily large integers, creating a newly allocated
- * arbitrarily large integer.  The client is responsible for freeing
- * any memory associated with the new value using ali_free.
- */
-APInt * api_product (APInt *a, APInt *b);
-
-
-/**
- * Find the remainder of two arbitrarily large integers, creating a 
- * newly allocated arbitrarily large integer.  The client is responsible 
- * for freeing any memory associated with the new value using ali_free.
- */
-APInt * api_remainder (APInt *a, APInt *b);
-
-/**
- * Find the quotient of two arbitrarily large integers, creating a 
- * newly allocated arbitrarily large integer.  The client is responsible 
- * for freeing any memory associated with the new value using ali_free.
- */
-APInt * api_quotient (APInt *a, APInt *b);
-
 
 // +--------------+---------------------------------------------------
 // | Constructors |
@@ -127,6 +95,52 @@ long api2long (APInt * api);
   */
 double api2double (APInt * api);
 
+// +-----------+-----------------------------------------------------
+// | Operators |
+// +-----------+
+
+/**
+ * Add two arbitrarily large integers, creating a newly allocated
+ * arbitrarily large integer.  The client is responsible for freeing
+ * any memory associated with the new value using ali_free.
+ */
+APInt * api_add (APInt *a, APInt *b);
+
+/**
+ * Subtract two arbitrarily large integers, creating a newly allocated
+ * arbitrarily large integer.  The client is responsible for freeing
+ * any memory associated with the new value using ali_free.
+ */
+APInt * api_subtract (APInt *a, APInt *b);
+
+/**
+ * Multiply two arbitrarily large integers, creating a newly allocated
+ * arbitrarily large integer.  The client is responsible for freeing
+ * any memory associated with the new value using ali_free.
+ */
+APInt * api_product (APInt *a, APInt *b);
+
+
+/**
+ * Find the remainder of two arbitrarily large integers, creating a 
+ * newly allocated arbitrarily large integer.  The client is responsible 
+ * for freeing any memory associated with the new value using ali_free.
+ */
+APInt * api_remainder (APInt *a, APInt *b);
+
+/**
+ * Find the quotient of two arbitrarily large integers, creating a 
+ * newly allocated arbitrarily large integer.  The client is responsible 
+ * for freeing any memory associated with the new value using ali_free.
+ */
+APInt * api_quotient (APInt *a, APInt *b);
+
+/**
+ * Compare two API values. Return -1 if the first is less than the 
+ * second, 0 if they are the same, and 1 if the first is greater than 
+ * the second
+ */
+int * api_cmp (APInt *a, APInt *b);
 
 
 #endif // __APILIB_H_
