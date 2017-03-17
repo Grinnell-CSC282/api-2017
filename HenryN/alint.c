@@ -1,11 +1,9 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
-#include <stdint.h>
 #include <math.h>
 #include <errno.h>
 #include <limits.h>
-
 
 /* Base of the number system
    NOT TO BE ALTERED BY THE USER!
@@ -171,7 +169,7 @@ ALInt * str2ali (char * s){
   char * head = s;
   char * tail = s;
   int sig;
-  while (*tail != '\0'){
+  while (tail[0] != '\0'){
     tail++;
   }
   tail--;
@@ -179,7 +177,7 @@ ALInt * str2ali (char * s){
     printf("Error converting string to ALInt: Argumant is not string of integer\nreturning 0 instead\n");
     return NULL;
   }
-  if (*head == '-'){
+  if (head[0] == '-'){
     if (head[1] == '0'){
       sig = 0;
     }else{
@@ -194,6 +192,7 @@ ALInt * str2ali (char * s){
     }
   }
   ALInt * out = newALInt(sig);
+  printf("sig %d\n\n",sig);
   int isFirst = 1;
   intnode * current = NULL;
   char * bufferhead = NULL;
@@ -218,11 +217,13 @@ ALInt * str2ali (char * s){
   }
   out->tail = current;
   printf("Finished converting to ali\n");
-  ALInt * tmp = removeLeadingZeros_ali(out);
-  ali_free(out);
-  if (isZero(tmp))
-    tmp->sign = 0;
-  return tmp;
+  printf("another line\n");
+  //ALInt * tmp = removeLeadingZeros_ali(out);
+  //ali_free(tmp);
+  //printf("str2ali tmp %p",tmp);
+  //if (isZero(tmp))
+  //  tmp->sign = 0;
+  return out;
 }
 
 char * ali2str(ALInt * x){
@@ -618,15 +619,15 @@ ALInt * removeLeadingZeros_ali(ALInt * i){
 
 char * removeLeadingZeros_str(char * s){
   char * front = s;
-  char * end = s;
   while ((front[1] != '\0')&&((front[0]=='0')||(front[0] == '-')))
     front++;
+  char * end = front;
   if (front != s){
     while (end[0] != '\0')
       end++;
-  }
-  if (*(end-1) == 'l'){
-    *(end-1) = '\0';
+    if (*(end-1) == 'l'){
+      *(end-1) = '\0';
+    }
   }
   char * new = malloc(((end-front)+2)*sizeof(char));
   if (s[0] == '-'){
