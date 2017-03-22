@@ -14,4 +14,5 @@
     (move-end-of-line nil)
     (comment-region (mark) (point)))
   (move-end-of-line nil)
-  (insert-char ?- (- fill-column (current-column))))
+  (insert-char ?- (- fill-column (current-column)))
+  (next-line 3))
