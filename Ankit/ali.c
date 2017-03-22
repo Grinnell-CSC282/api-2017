@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include "ali.h"
 
-
 alint * alint_init() {
   alint * ret = malloc(sizeof(alint));
   ret->data = malloc(sizeof(data_t) * ALI_BLOCK_SIZE);
