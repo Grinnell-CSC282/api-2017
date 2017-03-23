@@ -4,7 +4,7 @@ Manifest
 Headers
 -------
 
-`ali.h`
+`alint.h`
   : The interface for our library.
 
 Library Code
@@ -12,12 +12,10 @@ Library Code
 
 Tests
 -----
-`test-ali.c`
-  : Tests for each function within the library.
+
 Utilities
 ---------
-`sambox.el`
-  : Emacs lisp code to insert boxed comments.
+
 Miscellaneous
 -------------
 

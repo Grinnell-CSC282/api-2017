@@ -16,6 +16,8 @@ LDLIBS = -L. -lali
 # +------------------+-----------------------------------------------
 # | Standard Targets |
 # +------------------+
+all: ; #TODO Target all doesn't exist
+
 clean:
 	-rm -r *.o *.a test-ali
 
@@ -23,7 +25,7 @@ clean:
 # | Additional Targets |
 # +--------------------+
 
-libali.a: ali.o ali_arith.o ali_conv.o
+libali.a: ali_core.o ali_arith.o ali_conv.o
 	ar -rv $(.TARGET) $(.ALLSRC)
 
 test-ali: test-ali.o libali.a

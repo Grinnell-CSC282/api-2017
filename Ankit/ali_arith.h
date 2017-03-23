@@ -1,6 +1,6 @@
-#include "ali.h"
+#include "ali_core.h"
 
-alint * ali_add (alint* a, alint* b);
-alint * ali_subtract (alint* a, alint* b);
-alint * ali_multiply (alint* a, alint* b);
-alint * ali_divide (alint* a, alint* b);
+alint *alint_add (alint * a, alint * b);
+alint *alint_subtract (alint * a, alint * b);
+alint *alint_multiply (alint * a, alint * b);
+alint *alint_divide (alint * a, alint * b);
