@@ -7,11 +7,11 @@
 typedef uint8_t data_t;
 
 typedef struct {
-data_t * data;
+data_t ** data;
 size_t size;
 size_t max_size;
 } alint;
 
-void ali_free (alint *);
-alint * alint_init (size_t);
+void ali_free (alint * integer);
+alint * alint_init (size_t starting_size);
 #endif

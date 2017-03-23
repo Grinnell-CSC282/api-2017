@@ -1,11 +1,11 @@
 #include "ali.h"
 
-long ali2long (alint *);
-char * ali2str (alint *);
-int ali2int (alint *);
-double ali2double (alint *);
+long ali2long (alint * integer);
+char * ali2str (alint * integer);
+int ali2int (alint * integer);
+double ali2double (alint * integer);
 
-alint * long2alint (long);
-alint * str2alint (char*);
-alint * int2alint (int);
-alint * double2alint (double);
+alint * long2alint (long var);
+alint * str2alint (char* var);
+alint * int2alint (int var);
+alint * double2alint (double var);

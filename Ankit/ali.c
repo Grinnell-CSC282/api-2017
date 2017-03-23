@@ -3,7 +3,7 @@
 
 alint * alint_init(size_t start_size) {
   alint * ret = malloc(sizeof(alint));
-  ret->data = malloc(sizeof(data_t) * start_size);
+  ret->data = malloc(sizeof(data_t*) * start_size * ALI_BLOCK_SIZE);
   ret->size = 0;
   ret->max_size = start_size;
   return ret;
