@@ -23,7 +23,7 @@ clean:
 # | Additional Targets |
 # +--------------------+
 
-libali.a: ali.o
+libali.a: ali.o ali_arith.o ali_conv.o
 	ar -rv $(.TARGET) $(.ALLSRC)
 
 test-ali: test-ali.o libali.a

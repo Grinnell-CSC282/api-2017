@@ -4,5 +4,5 @@
 
 int
 main(int argc, char *argv[]) {
-  assert(alint_init() != 0);
+  assert(alint_init(sizeof(int)) != 0);
 }
