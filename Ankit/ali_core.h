@@ -2,7 +2,7 @@
 #define __ALI_H__
 #include <stdint.h>
 #include <stddef.h>
-#define BLOCKS(x) (sizeof(x) / sizeof(uint8_t))
+#include <limits.h>
 
 typedef uint8_t data_t;
 

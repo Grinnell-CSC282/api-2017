@@ -16,8 +16,8 @@ LDLIBS = -L. -lali
 # +------------------+-----------------------------------------------
 # | Standard Targets |
 # +------------------+
-all: ; #TODO Target all doesn't exist
-
+all:
+	make test
 clean:
 	-rm -r *.o *.a test-ali
 
