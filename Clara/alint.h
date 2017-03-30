@@ -1,41 +1,48 @@
 /** 
- *   alilib.h
- *     A library for storing and manipulating arbitrarily large 
+ * alint.h
+ *   A library for storing and manipulating arbitrarily large 
  *   integers (ALInts)
  *
- *   <insert appropriate FOSS license>
+ * <insert appropriate FOSS license>
  */
 
-#ifndef __ALINT_H_
-#define __ALINT_H_
+#ifndef __ALINT_H__
+#define __ALINT_H__
 
 // +-------------+---------------------------------------------------
 // | Definitions |
 // +-------------+
 
-typedef struct ALInt 
-  {
-    unsigned int sign:1;     // 1 for positive, 0 for negative
-    unsigned int ndigits;    // Size of the digits array
-    int digits[];   // Each array value represents one base-16 digit
-  } ALInt;
+/**
+ * Store all ALInt info in a linked list.
+ */
+struct ALIntDigit {
+  unsigned short value;
+  struct ALIntDigit * prev;
+  struct ALIntDigit * next;
+};
+typedef struct ALInt {
+  unsigned short sign;
+  unsigned int ndigits;
+  struct ALIntDigit * first;
+  struct ALIntDigit * last;
+} ALInt;
 
 
 // +-----------+-----------------------------------------------------
 // | Constants |
 // +-----------+
 
-#define INT_MAX 32767
-#define INT_MIN -32768
+#define BASE 16
 
-#define LONG_MAX 2147483647
-#define LONG_MIN -2147483648
+#define INT_MAX 1000000
+#define INT_MIN 1000000
 
-#define DOUBLE_MAX 4294967295.0
-#define DOUBLE_MIN -4294967295.0
+#define LONG_MAX 1000000
+#define LONG_MIN 1000000
 
-#define ALI_ZERO 0
-#define ALI_ONE 1
+#define DOUBLE_MAX 1000000.0
+#define DOUBLE_MIN 1000000.0
 
 
 // +------------+----------------------------------------------------
@@ -47,7 +54,7 @@ typedef struct ALInt
  * Initialize an arbitrarily large integer value. Client must call
  * this procedure before using the library.
  */
-void ali_init ();
+ALInt * ali_init ();
 
 /**
  * Free the memory associated with an ALInt.  Afterwards,
@@ -149,5 +156,5 @@ double ali2double (ALInt * a);
  */
 char * ali2str (ALInt * a);
 
-#endif // __ALINT_H_
+#endif // __ALINT_H__
 
