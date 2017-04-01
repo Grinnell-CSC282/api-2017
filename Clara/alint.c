@@ -7,6 +7,9 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <math.h>
 #include "alint.h"
 
 /**
@@ -23,34 +26,17 @@ ALInt * ali_init() {
 }
 
 /**
- * Create a new arbitrarily large integer. Returns pointer.
- */
-ALInt * ali_new(unsigned short value, unsigned short sign, unsigned int ndigits) {
-  ALInt * a = (ALInt *) malloc (sizeof (ALInt));
-  a->sign = sign;
-  a->ndigits = ndigits;
-
-  struct ALIntDigit * d = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
-  d->value = value;
-  d->prev = NULL;
-  d->next = NULL;
-
-  a->first = d;
-  a->last = d;
-  return a;
-}
-
-/**
  * Free the memory associated with an ALInt.  Afterwards,
  * i should no longer be used.
  */
 void ali_free(ALInt * i) {
   struct ALIntDigit * ptr = i->first;
 
+  // free each digit
   while(ptr != NULL) {
-    struct ALIntDigit * temp = ptr->next;
-    free(ptr);
-    ptr = temp;
+    struct ALIntDigit * temp = ptr;
+    ptr = ptr->next;
+    free(temp);
   }
   free(i);
 }
@@ -134,13 +120,101 @@ ALInt * ali_remainder(ALInt * a, ALInt * b);
  * Convert from int to ALInt, creating a newly allocated ALInt whose 
  * value is i.
  */
-ALInt * int2ali (int i);
+ALInt * int2ali (int i) {
+  ALInt * a = (ALInt *) malloc (sizeof (ALInt));
+  // set sign value (positive or negative)
+  if(i < 0) {
+    a->sign = 0;
+  }
+  else {
+    a->sign = 1;
+  }
+  // set number of digits
+  a->ndigits = (int) log10((double) i) + 1;
+
+  // create ALIntDigits and set next pointers
+  short digit;
+  struct ALIntDigit * cur;
+  // the rightmost next pointer will be null
+  struct ALIntDigit * next = NULL;
+  do {
+    digit = i % 10;
+
+    cur = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+    cur->value = digit;
+    cur->next = next;
+    // prepare for next round
+    next = cur;
+
+    // divide by 10 to move left
+    i /= 10;
+  } while(i != 0);
+
+  // set first pointer
+  a->first = cur;
+  // set prev pointers
+  cur->prev = NULL;
+  struct ALIntDigit * temp;
+  while(cur->next != NULL) {
+    temp = cur;
+    cur = cur->next;
+    cur->prev = temp;
+  }
+  // set last pointer
+  a->last = cur;
+
+  return a;
+}
 
 /**
  * Convert from long to ALInt, creating a newly allocated ALInt 
  * whose value is i.
  */
-ALInt * long2ali (long i);
+ALInt * long2ali (long i) {
+  ALInt * a = (ALInt *) malloc (sizeof (ALInt));
+  // set sign value (positive or negative)
+  if(i < 0) {
+    a->sign = 0;
+  }
+  else {
+    a->sign = 1;
+  }
+  // set number of digits
+  a->ndigits = (int) log10((double) i) + 1;
+
+  // create ALIntDigits and set next pointers
+  short digit;
+  struct ALIntDigit * cur;
+  // the rightmost next pointer will be null
+  struct ALIntDigit * next = NULL;
+  do {
+    digit = i % 10;
+
+    cur = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+    cur->value = digit;
+    cur->next = next;
+    // prepare for next round
+    next = cur;
+
+    // divide by 10 to move left
+    i /= 10;
+  } while(i != 0);
+
+  // set first pointer
+  a->first = cur;
+  // set prev pointers
+  cur->prev = NULL;
+  struct ALIntDigit * temp;
+  while(cur->next != NULL) {
+    temp = cur;
+    cur = cur->next;
+    cur->prev = temp;
+  }
+  // set last pointer
+  a->last = cur;
+
+  return a;
+}
 
 /**
  * Convert from double to ALInt, creating a newly allocated ALInt 
@@ -177,6 +251,21 @@ double ali2double (ALInt * a);
  * Convert a to string representation.  Returns a newly-allocated
  * string.
  */
-char * ali2str (ALInt * a);
+char * ali2str (ALInt * a) {
+  char * str = (char *) malloc (sizeof (char) * a->ndigits);
+  char * ch = (char *) malloc (sizeof (char));
+
+  // iterate through digits, storing each as char* and then adding to str
+  struct ALIntDigit * ptr = a->first;
+  while(ptr != NULL) {
+    // convert digit to char*
+    sprintf(ch, "%hu", ptr->value);
+    // append to str
+    strcat(str, ch);
+    ptr = ptr->next;
+  }
+
+  return str;
+}
 
 

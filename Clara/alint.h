@@ -17,13 +17,13 @@
  * Store all ALInt info in a linked list.
  */
 struct ALIntDigit {
-  unsigned short value;
+  short value;
   struct ALIntDigit * prev;
   struct ALIntDigit * next;
 };
 typedef struct ALInt {
-  unsigned short sign;
-  unsigned int ndigits;
+  short sign;
+  int ndigits;
   struct ALIntDigit * first;
   struct ALIntDigit * last;
 } ALInt;
