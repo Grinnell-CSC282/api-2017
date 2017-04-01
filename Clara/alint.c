@@ -17,12 +17,7 @@
  * this procedure before using the library.
  */
 ALInt * ali_init() {
-  ALInt * a = (ALInt *) malloc (sizeof (ALInt));
-  a->sign = 1;
-  a->ndigits = 0;
-  a->first = NULL;
-  a->last = NULL;
-  return a;
+  // STUB
 }
 
 /**
@@ -70,6 +65,7 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
     ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
     sum->first = ptrNew;
 
+/* !!! HERE !!! says it can't access ptrB->value on 3rd run through? */
     remainder = (ptrA->value + ptrB->value) % BASE;
     // digit equals current remainder plus previous buffer
     ptrNew->value = remainder + buffer;
@@ -82,6 +78,7 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
     ptrA = ptrA->prev;
     ptrB = ptrB->prev;
   }
+
   return sum;
 }
 

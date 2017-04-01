@@ -10,11 +10,11 @@
 # +------------------+
 
 alint.o: alint.c
-	cc -g -Wall  -c -o alint.o alint.c
+	cc -g -Wall  -c -o alint.o alint.c -lm
 alint: alint.o
-	cc -o alint alint.o
+	cc -o alint alint.o -lm
 test: test.c alint.c
-	cc -o test test.c -lm
+	cc -g -o test test.c -lm
 
 # +--------------------+---------------------------------------------
 # | Additional Targets |
