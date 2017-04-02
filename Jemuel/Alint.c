@@ -81,7 +81,7 @@ ali_free (ALInt *i)
 /**
  * Create a newly allocated ALInt whose value is i.
  */
-ALInt *
+ALInt * // unfinished
 int2ali (int i)
 {
   ALInt *new = (ALInt *) malloc(sizeof(ALInt));
@@ -92,7 +92,7 @@ int2ali (int i)
   while (i >= 0)
   {
     ALIntDigit *new = (ALIntDigit *) malloc(sizeof(ALIntDigit));
-    new->val = 
+    new->val =
   }
 }
 
