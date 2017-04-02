@@ -23,7 +23,7 @@ struct ALIntDigit {
 };
 typedef struct ALInt {
   unsigned short sign;
-  unsigned int ndigits;
+  int ndigits;
   struct ALIntDigit * first;
   struct ALIntDigit * last;
 } ALInt;
