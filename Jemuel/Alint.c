@@ -4,6 +4,56 @@
 #include <limits.h>     // For LONG_MAX and LONG_MIN
 #include <ctype.h>      // For isdigit and such.
 
+int
+str2long (char *str, long *lp)
+{
+  long result = 0;
+  long sign = 1;
+
+  // Skip over whitespace
+  while ((*str != '\0') && (isspace (*str)))
+    str++;
+
+  // Check for the sign
+  if (*str == '-')
+    {
+      str++;
+      sign = -1;
+    }
+  else if (*str == '+')
+    {
+      str++;
+    }
+
+  // Sanity check
+  if (!*str)
+    return 1;
+
+  // Read all of the digits
+  while (isdigit (*str))
+    {
+      long increment = sign * convertDigit (*str);
+      // Upper-bound check
+      if ((sign == 1) && (result > (LONG_MAX - increment) / 10))
+        return 3;
+      // Lower-bound check
+      if ((sign == -1) && (result < (LONG_MIN - increment) / 10))
+        return 3;
+      // Update the result
+      result = result*10 + increment;
+      // And move on to the next character
+      str++;
+    } // while
+
+  // Sanity check
+  if (*str != '\0')
+    return 2;
+
+  // I think that's it.
+  *lp = result;
+  return 0;
+} // str2long
+
 /**
  * Free the memory associated with an ALInt.  Afterwards,
  * i should no longer be used.
@@ -43,22 +93,14 @@ nt2ali (int i)
 ALInt *
 str2ali (char *i)
 {
-  ALint *new = malloc(sizeof(ALint));
-  if(i[0] == '-')
-  {
-    new->sign = -1;
-  }
-  else
-  {
-    new->sign = 1;
-  }
 
 }
 
 /**
  * Create a newly allocated ALInt whose value is i.
  */
-ALInt * long2ali (long i)
+ALInt *
+long2ali (long i)
 {
 
 }
@@ -66,7 +108,8 @@ ALInt * long2ali (long i)
 /**
  * Create a newly allocated ALInt whose value is i.
  */
-ALInt * double2ali (double i)
+ALInt *
+double2ali (double i)
 {
 
 }
@@ -75,16 +118,36 @@ ALInt * double2ali (double i)
  * Find the long that corresponds to a.  If a > LONG_MAX,
  * returns LONG_MAX.  If a < LONG_MIN, returns LONG_MIN.
  */
-long ali2long (ALInt *a)
+long
+ali2long (ALInt *a)
 {
+  long result = 0;
+  //long sign = -1;
 
+  int base = 10;
+  int power = 0;
+
+  ALIntDigit *cur = a->back;
+  while(sum < LONG_MAX)
+  {
+    int num = cur->val;
+    result += num * (base * power);
+    power++;
+    cur = cur->prev;
+  }
+  if(a->sign == -1)
+  {
+    result * -1;
+  }
+  return result;
 }
 
 /**
  * Convert a to string representation.  Returns a newly-allocated
  * string.
  */
-char * ali2str (ALInt *a)
+char *
+ali2str (ALInt *a)
 {
 
 }
@@ -92,17 +155,19 @@ char * ali2str (ALInt *a)
 /**
  * Find the int that corresponds to a.
  */
-long ali2int (ALInt *a)
+long
+ali2int (ALInt *a)
 {
-
+  return (int) ali2long(a);
 }
 
 /**
  * Find the double that corresponds to a.
  */
-char * ali2double (ALInt *a)
+double
+ali2double (ALInt *a)
 {
-
+  return (double) ali2long(a);
 }
 
 
@@ -111,7 +176,8 @@ char * ali2double (ALInt *a)
  * arbitrarily large integer.  The client is responsible for freeing
  * any memory associated with the new value using ali_free.
  */
-ALInt * ali_add (ALInt *a, ALInt *b)
+ALInt *
+ali_add (ALInt *a, ALInt *b)
 {
 
 }
@@ -121,7 +187,8 @@ ALInt * ali_add (ALInt *a, ALInt *b)
  * arbitrarily large integer.  The client is responsible for freeing
  * any memory associated with the new value using ali_free.
  */
-ALInt * ali_subtract (ALInt *a, ALInt *b)
+ALInt *
+ali_subtract (ALInt *a, ALInt *b)
 {
 
 }
@@ -131,7 +198,8 @@ ALInt * ali_subtract (ALInt *a, ALInt *b)
  * arbitrarily large integer.  The client is responsible for freeing
  * any memory associated with the new value using ali_free.
  */
-ALInt * ali_multiply (ALInt *a, ALInt *b)
+ALInt *
+ali_multiply (ALInt *a, ALInt *b)
 {
 
 }
@@ -141,7 +209,8 @@ ALInt * ali_multiply (ALInt *a, ALInt *b)
  * arbitrarily large integer.  The client is responsible for freeing
  * any memory associated with the new value using ali_free.
  */
-ALInt * ali_quotient (ALInt *a, ALInt *b)
+ALInt *
+ali_quotient (ALInt *a, ALInt *b)
 {
 
 }
@@ -151,7 +220,8 @@ ALInt * ali_quotient (ALInt *a, ALInt *b)
  * arbitrarily large integer.  The client is responsible for freeing
  * any memory associated with the new value using ali_free.
  */
-ALInt * ali_remainder (ALInt *a, ALInt *b)
+ALInt *
+ali_remainder (ALInt *a, ALInt *b)
 {
 
 }
