@@ -2,7 +2,6 @@
 #define __ALI_H__
 #include <stdint.h>
 #include <stddef.h>
-#include <limits.h>
 
 typedef uint8_t data_t;
 
@@ -14,5 +13,6 @@ typedef struct
 } alint;
 
 void alint_free (alint * integer);
-alint *alint_init (size_t starting_size);
+alint* alint_init (size_t starting_size);
+void alint_resize (alint* integer, size_t new_size);
 #endif
