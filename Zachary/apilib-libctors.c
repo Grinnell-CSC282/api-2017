@@ -39,8 +39,30 @@ typedef struct apint {
 // +-------------------+
 
 /**
+  * Create a newly allocated ALInt whose value is i.
+  * Only works for ints from -(BASE - 1) to (BASE).
+  */
+APInt *
+BASE2api (int i)
+{
+  // Make node
+  api_node_t * cur;
+  cur = (api_node_t *) malloc(sizeof(api_node_t));
+  cur->next = cur->prev = NULL;
+  cur->val = i >= 0 ? i : i * -1;
+
+  // Make int
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur_api->head = cur_api->tail = cur;
+  cur_api->sign = i >= 0 ? 1 : 0;
+  cur_api->size = 1;
+  return cur_api;
+} // hext2api
+
+/**
  * Initializes constants for API library. Must be called before library
  * is used.
+ * Preconditions: BASE > 2;
  */
 void
 api_init()

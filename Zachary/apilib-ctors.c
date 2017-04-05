@@ -21,15 +21,7 @@
 APInt *
 int2api (int i)
 {
-  api_node_t * cur;
-  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
-  cur = (api_node_t *) malloc(sizeof(api_node_t));
-  cur_api->tail = cur_api->head = cur;
-  cur_api->sign = i >= 0 ? 1 : 0;
-  cur_api->size = 1;
-  cur->next = cur->prev = NULL;
-  cur->val = i >= 0 ? i : i * -1;
-  return cur_api;
+  return long2api((long) i);
 } // int2api
 
 /**
@@ -50,7 +42,40 @@ str2api (char* str)
 APInt *
 long2api (long l)
 {
-  // STUB
+  if(val == 0) return API_ZERO; // Easy early test
+  
+  api_node_t * cur, prev;
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur_api->size = 0;
+  prev = NULL;
+  long val = i >= 0 i : i * -1;
+  
+  while(val > 0)
+    {
+      // Linked list maintenance
+      cur = (api_node_t *) malloc(sizeof(api_node_t));
+      cur_api->size++;
+      if (prev == NULL)
+        {
+          cur_api->tail = cur;
+        }
+      else
+        {
+          prev->next = cur;
+        }
+      cur->prev = prev;
+
+      // Set node value; adjust
+      cur->val = val % BASE;
+      val = val / BASE; // Division in c rounds down.
+
+      prev = cur;
+    }
+  cur->next = NULL;
+  cur_api->head = cur; // head is most significant bits
+
+  cur_api->sign = i >= 0 ? 1 : 0;
+  return cur_api;
 } // long2api
 
 /**
@@ -59,7 +84,40 @@ long2api (long l)
 APInt *
 double2api (double d)
 {
-  // STUB
+  if(val == 0) return API_ZERO; // Easy early test
+  
+  api_node_t * cur, prev;
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur_api->size = 0;
+  prev = NULL;
+  double val = i >= 0 i : i * -1;
+  
+  while(val > 0)
+    {
+      // Linked list maintenance
+      cur = (api_node_t *) malloc(sizeof(api_node_t));
+      cur_api->size++;
+      if (prev == NULL)
+        {
+          cur_api->tail = cur;
+        }
+      else
+        {
+          prev->next = cur;
+        }
+      cur->prev = prev;
+
+      // Set node value; adjust
+      cur->val = val % BASE;
+      val = val / BASE; // Division in c rounds down.
+
+      prev = cur;
+    }
+  cur->next = NULL;
+  cur_api->head = cur; // head is most significant bits
+
+  cur_api->sign = i >= 0 ? 1 : 0;
+  return cur_api;
 } // double2api
 
 /**
