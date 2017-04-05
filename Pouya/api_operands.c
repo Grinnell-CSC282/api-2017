@@ -11,6 +11,70 @@
 * The function will terminate and return null incase b is the equivalent of
 *   zero.
 */
+
+/**
+* api_compare and api_true_compare.
+* api_compare compares the true value of of two apis. api_true_compare
+*   considers the sign too.
+* return values:
+*     a >  b : +1
+*     a == b :  0
+*     a <  b : -1
+*/
+int
+api_true_compare (APInt * a, APInt * b)
+{
+  // we check for a difference in sign
+  if (a->sign == positive && b->sign == negative)
+    {
+      return 1;
+    } // if
+  else if (a->sign == negative && b->sign == positive)
+    {
+      return -1;
+    } // else if
+  // no difference in sign, calling api_compare
+  else
+    {
+      return api_compare (a, b);
+    } // else
+}
+
+int
+api_compare (APInt * a, APInt * b)
+{
+  // comparing the size
+  if (a->list->size > b->list->size)
+    {
+      return 1;
+    }
+  else if (a->list->size < b->list->size)
+    {
+      return -1;
+    }
+  // size is the same. Comparing individual values
+  else
+    {
+      for (int i = a->list->size - 1; i > -1; i--)
+	{
+	  if (a->list->array[i] > b->list->array[i])
+	    {
+	      return 1;
+	    }			// if
+	  else if (a->list->array[i] < b->list->array[i])
+	    {
+	      return -1;
+	    }			// else if
+	}			// for
+
+  // all values are the same. The true or real values are the same
+      return 0;
+    }				// else
+
+}
+
+
+
 // if normal is 1, it is true, if not it is 0
 APInt *
 api_add_helper (APInt * a, APInt * b, int normal)
@@ -205,53 +269,6 @@ api_sub (APInt * a, APInt * b)
   return api_sub_helper (a, b, 1);
 }
 
-// return 0 if a is bigger than b, 1 if b is bigger than a
-// returns 2 if they are the same
-int
-api_compare (APInt * a, APInt * b)
-{
-  if (a->list->size > b->list->size)
-    {
-      return 0;
-    }
-  else if (a->list->size < b->list->size)
-    {
-      return 1;
-    }
-  else
-    {
-      for (int i = a->list->size - 1; i > -1; i--)
-	{
-	  if (a->list->array[i] > b->list->array[i])
-	    {
-	      return 0;
-	    }			// if
-	  else if (a->list->array[i] < b->list->array[i])
-	    {
-	      return 1;
-	    }			// else if
-	}			// for
-      return 2;
-    }				// else
-
-}
-
-int
-api_true_compare (APInt * a, APInt * b)
-{
-  if (a->sign == positive && b->sign == negative)
-    {
-      return 0;
-    }
-  else if (a->sign == negative && b->sign == positive)
-    {
-      return 1;
-    }
-  else
-    {
-      return api_compare (a, b);
-    }
-}
 
 APInt *
 api_mlt (APInt * a, APInt * b)
