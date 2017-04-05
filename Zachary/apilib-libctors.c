@@ -12,6 +12,22 @@
 
 #include "apilib.h"
 
+// +---------+-------------------------------------------------------
+// | Structs |
+// +---------+
+
+typedef struct api_node {
+  int val;
+  struct api_node * next;
+  struct api_node * prev;
+} api_node_t;
+
+typedef struct apint {
+  int sign; // 1 for positive, 0 for negative
+  api_node_t * head;
+  api_node_t * tail;
+} APInt;
+
 // +-------------------+---------------------------------------------
 // | Library Functions |
 // +-------------------+
@@ -23,7 +39,11 @@
 void
 api_init()
 {
-  // STUB
+  APInt * API_ZERO = int2api(0);
+  APInt * API_ONE = int2api(1);
+  APInt * API_TWO = int2api(2);
+  APInt * API_NEG_ONE = int2api(-1);
+  APInt * API_NEG_TWO = int2api(-2);
 } // api_init
 
 /**
@@ -33,5 +53,9 @@ api_init()
 void
 api_cleanup()
 {
-  // STUB
+  api_free(API_ZERO);
+  api_free(API_ONE);
+  api_free(API_TW0);
+  api_free(API_NEG_ONE);
+  api_free(API_NEG_TWO);
 } // api_cleanup

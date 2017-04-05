@@ -21,7 +21,14 @@
 APInt *
 int2api (int i)
 {
-  // STUB
+  api_node_t * cur;
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur = (api_node_t *) malloc(sizeof(api_node_t));
+  cur_api->tail = cur_api->head = cur;
+  cur_api->sign = i >= 0 ? 1 : 0; 
+  cur->next = cur->prev = NULL;
+  cur->val = i >= 0 ? i : i * -1;
+  return cur_api;
 } // int2api
 
 /**
@@ -31,6 +38,9 @@ APInt *
 str2api (char* str)
 {
   // STUB
+  // Abuse existing library functions?
+  // String -> digit array -> binary -> ints
+  // Helper functions! Yay...
 } // str2api
 
 /**
@@ -58,5 +68,11 @@ double2api (double d)
 void
 api_free (APInt *i)
 {
-  // STUB
+  api_node_t * cur = i->head;
+  while(cur != NULL){
+    api_node_t * temp = cur;
+    cur = cur->next;
+    free(temp);
+  }
+  free(i);
 } // api_free

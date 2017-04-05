@@ -24,6 +24,9 @@ APInt *
 api_add (APInt *a, APInt *b)
 {
   //STUB
+  // Should be straightforward no matter what the implementation
+  // Sign might be a pain. Helper functions for unsigned addition & subtraction?
+  // Use API_CMP to cheat at finding bigger numbers for subtraction
 } // api_add
 
 /**
@@ -35,6 +38,7 @@ APInt *
 api_subtract (APInt *a, APInt *b)
 {
   //STUB
+  // Signs are a mess here
 } // api_subtract
 
 /**
@@ -46,6 +50,10 @@ APInt *
 api_product (APInt *a, APInt *b)
 {
   //STUB
+  // Signs easy to deal with
+  // product is easy with a binary representation - just bitshift
+  // Helper function to bitshift across gaps?
+  // Keep a running total for the sum?
 } // api_product
 
 /**
@@ -57,6 +65,7 @@ APInt *
 api_remainder (APInt *a, APInt *b)
 {
   //STUB
+  // Binary search plus double helper function and memoizing?
 } // api_remainder
 
 /**
@@ -68,4 +77,5 @@ APInt *
 api_quotient (APInt *a, APInt *b)
 {
   //STUB
+  // Remainder + subtraction
 } // api_quotient

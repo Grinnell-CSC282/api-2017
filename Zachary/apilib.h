@@ -20,10 +20,11 @@ typedef struct ap_int {
 // | Constants |
 // +-----------+
 
-APInt API_ZERO;
-APInt API_ONE;
-APInt API_TWO;
-APInt API_NEG_ONE;
+APInt* API_ZERO;
+APInt* API_ONE;
+APInt* API_TWO;
+APInt* API_NEG_ONE;
+APInt* API_NEG_TWO;
 
 // +-------------------+---------------------------------------------
 // | Library Functions |
