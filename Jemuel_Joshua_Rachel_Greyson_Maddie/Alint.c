@@ -111,7 +111,7 @@ str2ali (char *i)
 ALInt *
 long2ali (long i)
 {
-
+ return long2ali ((int) i);
 }
 
 /**
@@ -120,7 +120,7 @@ long2ali (long i)
 ALInt *
 double2ali (double i)
 {
-
+ return int2ali ((int) i);
 }
 
 /**
@@ -158,7 +158,21 @@ ali2long (ALInt *a)
 char *
 ali2str (ALInt *a)
 {
-
+  //create our str and ch
+  //charlie says the (char *) is not essential, but is safer to make
+  //sure you malloc the right amount
+  char * result = (char *) malloc (sizeof (char) * a.ndigits);
+  char * ch = (char *) malloc (sizeof (char));
+  
+  //create a cur and adding each digit to str
+struct ALIntDigit * cur = a.front;
+  while(cur != NULL) {
+    
+    //using strlcat because no fear of buffer overflow
+    strlcat(result, ch);
+    cur = cur.next;
+    )
+      return result;
 }
 
 /**
@@ -173,8 +187,7 @@ ali2int (ALInt *a)
 /**
  * Find the double that corresponds to a.
  */
-double
-ali2double (ALInt *a)
+double ali2double (ALInt *a) 
 {
   return (double) ali2long(a);
 }
