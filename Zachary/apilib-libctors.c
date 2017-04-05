@@ -16,16 +16,22 @@
 // | Structs |
 // +---------+
 
+#define BASE 16 // The base for numbers used in the representation.
+// Should be a power of two - multiplication (and other functions)
+//   are contingent on a power of two base
+// Addition is also contingent on base being less than INT_MAX / 2
+
 typedef struct api_node {
-  int val;
+  int val; // Represents values in hex; all ints are positive
   struct api_node * next;
   struct api_node * prev;
 } api_node_t;
 
 typedef struct apint {
-  int sign; // 1 for positive, 0 for negative
-  api_node_t * head;
-  api_node_t * tail;
+  int sign; // 1 for positive, 0 for negative\
+  int size;
+  api_node_t * head; // Points to leading digits
+  api_node_t * tail; // Poitns to unit digits
 } APInt;
 
 // +-------------------+---------------------------------------------

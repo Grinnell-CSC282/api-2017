@@ -25,7 +25,8 @@ int2api (int i)
   APInt * cur_api = (APInt *) malloc(sizeof(APInt));
   cur = (api_node_t *) malloc(sizeof(api_node_t));
   cur_api->tail = cur_api->head = cur;
-  cur_api->sign = i >= 0 ? 1 : 0; 
+  cur_api->sign = i >= 0 ? 1 : 0;
+  cur_api->size = 1;
   cur->next = cur->prev = NULL;
   cur->val = i >= 0 ? i : i * -1;
   return cur_api;
