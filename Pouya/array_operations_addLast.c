@@ -4,7 +4,7 @@
 
 /**
 * Function to make sure arrays have proper size,
-*   will create a new array and repalce everything in it in case it is our of
+*   will create a new array and repalce everything in it in case it is out of
 *   space.
 */
 void static

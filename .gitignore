@@ -1,0 +1,11 @@
+# Ignore editor cruft
+*.swp
+\#*
+*~
+
+# Ignore C cruft
+*.o
+*.a
+
+# Ignore playground
+sandbox

@@ -4,7 +4,8 @@
 #include "array_operations.h"
 #define BASE 10
 
-enum int_sign{
+enum int_sign
+{
   positive,
   negative
 };
@@ -12,7 +13,7 @@ enum int_sign{
 struct APInt
 {
   enum int_sign sign;
-  array_list * list;
+  array_list *list;
 };
 typedef struct APInt APInt;
 /**
@@ -24,24 +25,25 @@ typedef struct APInt APInt;
 * The function will terminate and return null incase b is the equivalent of
 *   zero.
 */
-APInt * api_add (APInt *a, APInt *b);
-APInt * api_sub (APInt *a, APInt *b);
-APInt * api_mlt (APInt *a, APInt *b);
-APInt * api_dvd (APInt *a, APInt *b);
-APInt * str2api (char * i);
-APInt * int2api (int i);
-APInt * long2api (long i);
-APInt * double2api (double i);
-char * api2str (APInt * i);
+APInt *api_add (APInt * a, APInt * b);
+APInt *api_sub (APInt * a, APInt * b);
+APInt *api_mlt (APInt * a, APInt * b);
+APInt *api_dvd (APInt * a, APInt * b);
+APInt *str2api (char *i);
+APInt *int2api (int i);
+APInt *long2api (long i);
+APInt *double2api (double i);
+char *api2str (APInt * i);
 int api2int (APInt * i);
 long api2long (APInt * i);
 double api2double (APInt * i);
-void api_init();
-void api_cleanup();
-void api_free(APInt *i);
-int api_compare(APInt *a, APInt *b);
-APInt * api_sub_helper (APInt *a, APInt *b, int normal);
-APInt * api_add_helper (APInt *a, APInt *b, int normal);
+void api_init ();
+void api_cleanup ();
+void api_free (APInt * i);
+int api_compare (APInt * a, APInt * b);
+int api_true_compare(APInt * a, APInt *b);
+APInt *api_sub_helper (APInt * a, APInt * b, int normal);
+APInt *api_add_helper (APInt * a, APInt * b, int normal);
 
 
 #endif // __API__

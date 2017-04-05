@@ -1,6 +1,7 @@
 #include "api.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <unistd.h>
 /**
 * apid_add, api_dub, api_mlt, api_dvd are the common arithemtic operations
 *   implemented for arbitrary precision numbers.
@@ -68,6 +69,10 @@ api_add_helper (APInt * a, APInt * b, int normal)
 	      add_last (ret->list, a->list->array[i]);
 	    }
 	}			// for
+      if (left_over)
+	{
+	  add_last (ret->list, 1);
+	}
       return ret;
     }				// else
 }
@@ -128,6 +133,19 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		  add_last (ret->list, a->list->array[i]);
 		}		// else
 	    }			//for
+
+	  // this is important. I noticed due to the fact that I might have some
+	  // zeros, I don't acutally reduce the size. Here I attempt to do that:
+	  int zero_count = 0;	// finding the amount of zeroes.
+	  char *string = api2str (ret);
+	  for (; string[zero_count] != '\0' && (string[zero_count] == '0'
+						|| string[zero_count] == '+'
+						|| string[zero_count] == '-');
+	       zero_count++)
+	    ;
+	  // negative 1 because it also counted the sign
+	  ret->list->size -= zero_count - 1;	// fixing the size
+	  free (string);
 	  return ret;
 	}			// else if
       else
@@ -163,6 +181,18 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		  add_last (ret->list, b->list->array[i]);
 		}		// else
 	    }			// for
+	  // this is important. I noticed due to the fact that I might have some
+	  // zeros, I don't acutally reduce the size. Here I attempt to do that:
+	  int zero_count = 0;	// finding the amount of zeroes.
+	  char *string = api2str (ret);
+	  for (; string[zero_count] != '\0' && (string[zero_count] == '0'
+						|| string[zero_count] == '+'
+						|| string[zero_count] == '-');
+	       zero_count++)
+	    ;
+	  // negative 1 because it also counted the sign
+	  ret->list->size -= zero_count - 1;	// fixing the size
+	  free (string);
 	  return ret;
 	}			// else
 
@@ -202,8 +232,25 @@ api_compare (APInt * a, APInt * b)
 	    }			// else if
 	}			// for
       return 2;
-    }				// else 
+    }				// else
 
+}
+
+int
+api_true_compare (APInt * a, APInt * b)
+{
+  if (a->sign == positive && b->sign == negative)
+    {
+      return 0;
+    }
+  else if (a->sign == negative && b->sign == positive)
+    {
+      return 1;
+    }
+  else
+    {
+      return api_compare (a, b);
+    }
 }
 
 APInt *
@@ -264,7 +311,7 @@ api_dvd (APInt * a, APInt * b)
 	("OK, enough. My laptop is bleeding next to me and I'm writing this code instead of fixing it. At this moment, I don't want to think about dividing things by zero. I'll change this later, but not at 2:35 AM because of a bluetooth issue.");
       free (zero);
       return NULL;
-    }              // if
+    }				// if
   else
     {
       APInt *one = int2api (1);
@@ -273,7 +320,7 @@ api_dvd (APInt * a, APInt * b)
       APInt *current = api_add (a, zero);
       APInt *oldcurr;
       free (zero);
-      while (api_compare (current, b) == 0 || api_compare(current, b) == 2)
+      while (api_compare (current, b) == 0 || api_compare (current, b) == 2)
 	{
 	  oldret = ret;
 	  ret = api_add (ret, one);
@@ -281,7 +328,7 @@ api_dvd (APInt * a, APInt * b)
 	  oldcurr = current;
 	  current = api_sub_helper (current, b, 0);
 	  free (oldcurr);
-	} // while
+	}			// while
       if ((b->sign == positive && a->sign == positive)
 	  || (a->sign == negative && b->sign == negative))
 	{

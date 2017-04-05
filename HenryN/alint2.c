@@ -164,10 +164,10 @@ ALInt * str2ali (char * s){
     printf("Unable to convert string %s to ALInt: It must contain only digits and a minus sign in leftmost position\n", s);
     return NULL;
   }
-  s = removeLeadingZeros_str(s);
+  char * ss = removeLeadingZeros_str(s);
   //printf("removed zeros %s\n",s);
-  char * head = s;
-  char * tail = s;
+  char * head = ss;
+  char * tail = ss;
   int sig;
   while (tail[0] != '\0'){
     tail++;
@@ -223,6 +223,7 @@ ALInt * str2ali (char * s){
   //printf("str2ali tmp %p",tmp);
   //if (isZero(tmp))
   //  tmp->sign = 0;
+  free(ss);
   return out;
 }
 
@@ -505,15 +506,17 @@ ALInt * ali_multiply (ALInt *a, ALInt *b){
       product = getNthComponent(a,i)*getNthComponent(b,j);
       printf("get*get %ld\n",product);
       product = product*uintpow(BASE, (i+j));
-      printf("after %lu\n",product);
+      printf("after %ld\n",product);
       tmp1 = long2ali(product);
       printf("tmp1 %s\n",ali2str(tmp1));
-      printf("sum %s\n",ali2str(sum));
-      tmp2 = ali_add(sum, tmp1);
+      printf("sum1 %s\n",ali2str(sum));
+      printf("sum=0: %d\ntmp1=0: %d\n",isZero(sum),isZero(tmp1));
+      tmp2 = ali_add(tmp1, sum);
       printf("tmp2 %s\n",ali2str(tmp2));
       ali_free(tmp1);
       ali_free(sum);
       sum = tmp2;
+      printf("sum2 %s\n",ali2str(sum));
       ali_free(tmp2);
     }
   }
@@ -633,16 +636,12 @@ char * removeLeadingZeros_str(char * s){
   if (front != s){
     while (end[0] != '\0')
       end++;
-    if (*(end-1) == 'l'){
-      *(end-1) = '\0';
-    }
   }
   char * new = malloc(((end-front)+2)*sizeof(char));
+  strcpy(new, front);
   if (s[0] == '-'){
+    memmove(new+1,new,(end-front)+1);
     new[0] = '-';
-    strcpy(new+1,front);
-  }else{
-    strcpy(new, front);
   }
   return new;
 }
@@ -754,21 +753,25 @@ int main(){
 */
   // operations tests
   printf("Ops Tests\n");
+  char * s1;
   for(i=0; i< 1; i++){
     printf("Input n: %s\n",x[i]);
-    printf("Input m: %s\n",x[i+1]);
+    //printf("Input m: %s\n",x[i+1]);
     ALInt * n = str2ali(x[i]);
     ALInt * m = str2ali(x[i+1]);
-    //ALInt * a = ali_add(n,m);
-    //printf("n+m=%s\n",ali2str(a));
+    ALInt * a = ali_add(n,m);
+    s1 = ali2str(a);
+    printf("n+m=%s\n",s1);
     //ALInt * s = ali_subtract(n,m);
     //printf("n-m=%s\n",ali2str(s));
-    ALInt * p = ali_multiply(n,m);
-    printf("n*m=%s\n\n",ali2str(p));
+    //ALInt * p = ali_multiply(n,m);
+    //printf("n*m=%s\n\n",ali2str(p));
     ali_free(n);
-    ali_free(p);
-    //ali_free(a);
+    //ali_free(p);
+    ali_free(a);
     //ali_free(s);
+    ali_free(m);
+    free(s1);
   }
   return 0;
 }
