@@ -18,3 +18,15 @@ alint_free (alint * integer)
   free (integer->data);
   free (integer);
 }
+
+void
+alint_resize(alint* integer, size_t new_size)
+{
+  if (integer->size >= new_size)
+    return;
+  integer->data = realloc (integer->data, new_size);
+  for (int i = integer->size; i < new_size; i++) {
+    integer->data[i] = integer->data[integer->size - 1] >> 7 ? 0xFF : 0;
+  }
+  integer->size = new_size;
+}

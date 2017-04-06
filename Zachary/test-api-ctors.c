@@ -29,6 +29,8 @@ main (int argc, char *argv[<a href="#referent" id="reference"></a>])
   char*  nlarge_str = "-10000";
   long   nlarge_long = -72036854775808;
   char*  nlarge_long_str = "-72036854775808";
+
+  api_init();
   
   // Constants
   assert (api_cmp(API_ZERO, int2api(0)) == 0);
@@ -55,7 +57,10 @@ main (int argc, char *argv[<a href="#referent" id="reference"></a>])
   assert (api_cmp(str2api(nlarge_long_str), long2api(nlarge_long)) == 0);
   assert (api_cmp(str2api(nlarge_long_str), double2api((double) nlarge_long)) == 0);
   assert (api_cmp(long2api(nlarge_long), double2api((double) nlarge_long)) == 0);
+
+  api_cleanup();
   
   // And we're done.
   return 0;
 } // main
+

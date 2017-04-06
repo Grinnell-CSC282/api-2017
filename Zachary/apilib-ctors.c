@@ -21,7 +21,7 @@
 APInt *
 int2api (int i)
 {
-  // STUB
+  return long2api((long) i);
 } // int2api
 
 /**
@@ -31,6 +31,9 @@ APInt *
 str2api (char* str)
 {
   // STUB
+  // Abuse existing library functions?
+  // String -> digit array -> binary -> ints
+  // Helper functions! Yay...
 } // str2api
 
 /**
@@ -39,7 +42,40 @@ str2api (char* str)
 APInt *
 long2api (long l)
 {
-  // STUB
+  if(val == 0) return API_ZERO; // Easy early test
+  
+  api_node_t * cur, prev;
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur_api->size = 0;
+  prev = NULL;
+  long val = i >= 0 i : i * -1;
+  
+  while(val > 0)
+    {
+      // Linked list maintenance
+      cur = (api_node_t *) malloc(sizeof(api_node_t));
+      cur_api->size++;
+      if (prev == NULL)
+        {
+          cur_api->tail = cur;
+        }
+      else
+        {
+          prev->next = cur;
+        }
+      cur->prev = prev;
+
+      // Set node value; adjust
+      cur->val = val % BASE;
+      val = val / BASE; // Division in c rounds down.
+
+      prev = cur;
+    }
+  cur->next = NULL;
+  cur_api->head = cur; // head is most significant bits
+
+  cur_api->sign = i >= 0 ? 1 : 0;
+  return cur_api;
 } // long2api
 
 /**
@@ -48,7 +84,40 @@ long2api (long l)
 APInt *
 double2api (double d)
 {
-  // STUB
+  if(val == 0) return API_ZERO; // Easy early test
+  
+  api_node_t * cur, prev;
+  APInt * cur_api = (APInt *) malloc(sizeof(APInt));
+  cur_api->size = 0;
+  prev = NULL;
+  double val = i >= 0 i : i * -1;
+  
+  while(val > 0)
+    {
+      // Linked list maintenance
+      cur = (api_node_t *) malloc(sizeof(api_node_t));
+      cur_api->size++;
+      if (prev == NULL)
+        {
+          cur_api->tail = cur;
+        }
+      else
+        {
+          prev->next = cur;
+        }
+      cur->prev = prev;
+
+      // Set node value; adjust
+      cur->val = val % BASE;
+      val = val / BASE; // Division in c rounds down.
+
+      prev = cur;
+    }
+  cur->next = NULL;
+  cur_api->head = cur; // head is most significant bits
+
+  cur_api->sign = i >= 0 ? 1 : 0;
+  return cur_api;
 } // double2api
 
 /**
@@ -58,5 +127,11 @@ double2api (double d)
 void
 api_free (APInt *i)
 {
-  // STUB
+  api_node_t * cur = i->head;
+  while(cur != NULL){
+    api_node_t * temp = cur;
+    cur = cur->next;
+    free(temp);
+  }
+  free(i);
 } // api_free

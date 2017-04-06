@@ -10,9 +10,10 @@
 int
 api2int (APInt * i)
 {
-  if (i->list->size == 0){
-    return 0;
-  } // if
+  if (i->list->size == 0)
+    {
+      return 0;
+    }				// if
   int ret = 0;			// the return value;
   int power = 1;		// keeping track of our power, more efficient than
   //    calling pow each time
