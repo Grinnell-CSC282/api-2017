@@ -20,10 +20,10 @@ api2int (APInt * i)
   if (api_true_compare (api_max, i) != 1)
     {
       api_free (api_max);
-        return INT_MAX;
+      return INT_MAX;
     }
-  api_free(api_max);
-  APInt * api_min = int2api(INT_MIN);
+  api_free (api_max);
+  APInt *api_min = int2api (INT_MIN);
   // incase our number is smaller or equal to api_min
   if (api_true_compare (api_min, i) != -1)
     {

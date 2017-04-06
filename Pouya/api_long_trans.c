@@ -23,7 +23,7 @@ api2long (APInt * i)
       return LONG_MAX;
     }
   api_free (api_max);
-  APInt * api_min = long2api(LONG_MIN);
+  APInt *api_min = long2api (LONG_MIN);
   // incase our number is smaller or equal to api_min
   if (api_true_compare (api_min, i) != -1)
     {

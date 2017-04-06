@@ -21,13 +21,13 @@ api2double (APInt * i)
     {
       api_free (api_max);
       if (i->sign == positive)
-      {
-        return DBL_MAX;
-      }
+	{
+	  return DBL_MAX;
+	}
       else
-      {
-        return -DBL_MAX;
-      }
+	{
+	  return -DBL_MAX;
+	}
     }
   // in case our number is bigger, we can return infinity
   else if (api_compare (api_max, i) == -1)

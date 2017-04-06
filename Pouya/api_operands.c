@@ -36,14 +36,14 @@ api_true_compare (APInt * a, APInt * b)
   // no difference in sign, calling api_compare
   else
     {
-        if (a->sign == positive)
-        {
-          return api_compare(a,b);
-        }
-        else
-        {
-          return -api_compare(a,b);
-        }
+      if (a->sign == positive)
+	{
+	  return api_compare (a, b);
+	}
+      else
+	{
+	  return -api_compare (a, b);
+	}
     }				// else
 }
 
@@ -195,13 +195,14 @@ api_sub_helper (APInt * a, APInt * b, int normal)
   /* making sure we are doing true subtraction. Subtracting negative from
    *   positive is not truely subtraction
    */
+
   if (normal == 1 && a->sign == positive && b->sign == negative)
     {
       return api_add_helper (a, b, 0);
     }				// if
   else if (normal == 1 && a->sign == negative && b->sign == positive)
     {
-      return api_add_helper (b, a, 0);
+      return api_add_helper (a, b, 0);
     }				// else if
   else
     {
@@ -259,7 +260,14 @@ api_sub_helper (APInt * a, APInt * b, int normal)
       // the case where b is bigger than a
       else
 	{
-	  ret->sign = b->sign;
+    if (b->sign == positive)
+    {
+       ret->sign = negative;
+    }
+	  else
+    {
+      ret->sign = positive;
+    }
 	  bool left_over = false;
 	  // a bool used to keep track of value that are below 0
 	  int i, dif;
