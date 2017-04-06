@@ -79,6 +79,8 @@ api_compare (APInt * a, APInt * b)
 * A normal of 0 means to ignore the the signs and just subtract the true values.
 * For instance, api_add(10, -5, 1) = 5 but api_add(10, -5, 0) = 15, and
 *   api_add(-5, 10, 0) = -15.
+* For instance, api_sub(10, -5, 1) = 15 but api_sub(10, -5, 0) = 5, and
+*   api_sub(-5, 10, 0) = 5.
 */
 
 APInt *
@@ -87,13 +89,12 @@ api_add (APInt * a, APInt * b)
   return api_add_helper (a, b, 1);
 }
 
-// if normal is 1, it is true, if not it is 0
 APInt *
 api_add_helper (APInt * a, APInt * b, int normal)
 {
   /* making sure we are doing true addition. Adding a negative to positive is \
-     not truely addition
-   */
+  * not truely addition
+  */
   if (normal == 1 && a->sign == positive && b->sign == negative)
     {
       return api_sub_helper (a, b, 0);
@@ -108,19 +109,20 @@ api_add_helper (APInt * a, APInt * b, int normal)
       APInt *ret = str2api ("");	// the return value
 
       ret->sign = a->sign;	// the sign is set to the first variable
-      bool left_over = false;	/* a bool used to remember if we have the added \
-				   values exceed 10
-				 */
+      bool left_over = false;
+        // a bool used to remember if we have the added values that exceed 10
 
-      int i, j, sum;		/* i : current index of a->list->array.
-				   j : current index of b->list->array.
-				   sum: sum of the last two indexes.
+
+      int i, j, sum;
+        /* i : current index of a->list->array.
+				 * j : current index of b->list->array.
+				 *sum: sum of the last two indexes.
 				 */
 
       /*
-         here we add elements of a and b that have the same index as long
-         we do not exceed the size of either a or b.
-       */
+      * here we add elements of a and b that have the same index as long
+      * we do not exceed the size of either a or b.
+      */
       for (i = 0, j = 0; i < a->list->size && j < b->list->size; i++, j++)
 	{
 	  sum = a->list->array[i] + b->list->array[j];
@@ -163,8 +165,8 @@ api_add_helper (APInt * a, APInt * b, int normal)
 	    }
 	}			// for
       /* making sure our left_over is false. This is a special case when \
-         a and b have the same length and we have a left_over value.
-       */
+      * a and b have the same length and we have a left_over value.
+      */
       if (left_over)
 	{
 	  add_last (ret->list, 1);
@@ -175,8 +177,17 @@ api_add_helper (APInt * a, APInt * b, int normal)
 
 
 APInt *
+api_sub (APInt * a, APInt * b)
+{
+  return api_sub_helper (a, b, 1);
+}
+
+APInt *
 api_sub_helper (APInt * a, APInt * b, int normal)
 {
+  /* making sure we are doing true subtraction. Subtracting negative from
+  *   positive is not truely subtraction
+  */
   if (normal == 1 && a->sign == positive && b->sign == negative)
     {
       return api_add_helper (a, b, 0);
@@ -187,17 +198,23 @@ api_sub_helper (APInt * a, APInt * b, int normal)
     }				// else if
   else
     {
-      if (api_compare (a, b) == 2)
+      // by comparing we know about the sign of the outcome.
+      if (api_compare (a, b) == 0)
 	{
 	  return str2api ("");
 	}			// if
-      else if (api_compare (a, b) == 0)
+      // the case if the true value of a is bigger than b
+      else if (api_compare (a, b) == 1)
 	{
-	  APInt *ret = str2api ("");
+	  APInt *ret = str2api (""); // the return value
 	  ret->sign = a->sign;
 	  bool left_over = false;
+      // a bool used to keep track of value that are below 0
 	  int i, dif;
-	  for (i = 0; i < b->list->size; i++)
+    /* i : used to keep track of our index, for both i and j
+    * dif: difference of the last two indexes
+    */
+    for (i = 0; i < b->list->size; i++)
 	    {
 	      dif = a->list->array[i] - b->list->array[i];
 	      if (left_over)
@@ -212,6 +229,7 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		}		// if
 	      add_last (ret->list, dif);
 	    }			// for
+    // copying the rest of a
 	  for (; i < a->list->size; i++)
 	    {
 	      if (left_over)
@@ -225,28 +243,23 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		}		// else
 	    }			//for
 
-	  // this is important. I noticed due to the fact that I might have some
-	  // zeros, I don't acutally reduce the size. Here I attempt to do that:
-	  int zero_count = 0;	// finding the amount of zeroes.
-	  char *string = api2str (ret);
-	  for (;
-	       string[zero_count] != '\0' && (string[zero_count] == '0'
-					      || string[zero_count] ==
-					      '+'
-					      || string[zero_count] ==
-					      '-'); zero_count++)
-	    ;
-	  // negative 1 because it also counted the sign
-	  ret->list->size -= zero_count - 1;	// fixing the size
-	  free (string);
-	  return ret;
+      /*  It is important to note that we will never have a case where
+      *     i == a->list->size but left_over = true. We know this because
+      *     we made sure a > b. If such a thing happens, then we know that
+      *     b > a.
+      */
 	}			// else if
+      // the case where b is bigger than a
       else
 	{
-	  APInt *ret = str2api ("");
+	  APInt *ret = str2api (""); // return value
 	  ret->sign = b->sign;
-	  bool left_over = false;
-	  int i, dif;
+    bool left_over = false;
+      // a bool used to keep track of value that are below 0
+   int i, dif;
+    /* i : used to keep track of our index, for both i and j
+    * dif: difference of the last two indexes
+    */
 	  for (i = 0; i < a->list->size; i++)
 	    {
 	      dif = b->list->array[i] - a->list->array[i];
@@ -262,6 +275,7 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		}		// if
 	      add_last (ret->list, dif);
 	    }			// for
+    // copying the rest of b
 	  for (; i < b->list->size; i++)
 	    {
 	      if (left_over)
@@ -274,30 +288,31 @@ api_sub_helper (APInt * a, APInt * b, int normal)
 		  add_last (ret->list, b->list->array[i]);
 		}		// else
 	    }			// for
-	  // this is important. I noticed due to the fact that I might have some
-	  // zeros, I don't acutally reduce the size. Here I attempt to do that:
-	  int zero_count = 0;	// finding the amount of zeroes.
-	  char *string = api2str (ret);
-	  for (;
-	       string[zero_count] != '\0' && (string[zero_count] == '0'
-					      || string[zero_count] ==
-					      '+'
-					      || string[zero_count] ==
-					      '-'); zero_count++)
-	    ;
-	  // negative 1 because it also counted the sign
-	  ret->list->size -= zero_count - 1;	// fixing the size
-	  free (string);
-	  return ret;
+      /*  It is important to note that we will never have a case where
+      *     i == b->list->size but left_over = true. We know this because
+      *     we made sure a < b. If such a thing happens, then we know that
+      *     b < a.
+      */
+
 	}			// else
-
+  /* due to how I do subtraction, the result of api_sub(15, 10) = 05.
+  *  Mathematically this is currect, but the size of the outcome is 2, not 1.
+  *  This part of code is designed to resolve this issue.
+  */
+  int zero_count = 0;	// the zero count
+  char *string = api2str (ret);
+  for (;
+       string[zero_count] != '\0' && (string[zero_count] == '0'
+              || string[zero_count] ==
+              '+'
+              || string[zero_count] ==
+              '-'); zero_count++)
+    ;
+  // negative 1 because it also counted the sign
+  ret->list->size -= zero_count - 1;	// fixing the size
+  free (string);
+  return ret;
     }				// else
-}
-
-APInt *
-api_sub (APInt * a, APInt * b)
-{
-  return api_sub_helper (a, b, 1);
 }
 
 
