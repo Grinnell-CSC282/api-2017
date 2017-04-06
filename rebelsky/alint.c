@@ -58,6 +58,84 @@ uint_to_ali (unsigned int uint)
   return result;
 }
 
+struct ALInt *
+int_to_ali (int uint)
+{
+  struct ALInt *result = malloc (sizeof (struct ALInt));
+  struct ALInt_node *head = malloc (sizeof (struct ALInt_node));
+  int length = sizeof (uint) * 8;
+  result->sign = uint < 0;
+  result->head = head;
+  result->length = length;
+  head->val = uint & 1 ? 1 : 0;
+  struct ALInt_node *current = head;
+  struct ALInt_node *next;
+  int i;
+  for (i = 1; i < length; i++)
+    {
+      next = malloc (sizeof (struct ALInt_node));
+      current->next = next;
+      next->prev = current;
+      current = next;
+      current->val = uint & (1 << i) ? 1 : 0;
+    }
+  result->tail = next;
+  ali_unpad (result);
+  return result;
+}
+
+struct ALInt *
+ulong_to_ali (unsigned long uint)
+{
+  struct ALInt *result = malloc (sizeof (struct ALInt));
+  struct ALInt_node *head = malloc (sizeof (struct ALInt_node));
+  int length = sizeof (uint) * 8;
+  result->sign = 0;             // Since we have an unsiqned integer
+  result->head = head;
+  result->length = length;
+  head->val = uint & 1 ? 1 : 0;
+  struct ALInt_node *current = head;
+  struct ALInt_node *next;
+  int i;
+  for (i = 1; i < length; i++)
+    {
+      next = malloc (sizeof (struct ALInt_node));
+      current->next = next;
+      next->prev = current;
+      current = next;
+      current->val = uint & (1 << i) ? 1 : 0;
+    }
+  result->tail = next;
+  ali_unpad (result);
+  return result;
+}
+
+struct ALInt *
+long_to_ali (long uint)
+{
+  struct ALInt *result = malloc (sizeof (struct ALInt));
+  struct ALInt_node *head = malloc (sizeof (struct ALInt_node));
+  int length = sizeof (uint) * 8;
+  result->sign = uint < 0;
+  result->head = head;
+  result->length = length;
+  head->val = uint & 1 ? 1 : 0;
+  struct ALInt_node *current = head;
+  struct ALInt_node *next;
+  int i;
+  for (i = 1; i < length; i++)
+    {
+      next = malloc (sizeof (struct ALInt_node));
+      current->next = next;
+      next->prev = current;
+      current = next;
+      current->val = uint & (1 << i) ? 1 : 0;
+    }
+  result->tail = next;
+  ali_unpad (result);
+  return result;
+}
+
 void
 ali_delete (struct ALInt *val)
 {
@@ -87,6 +165,32 @@ ali_pad (struct ALInt *ali, unsigned long bits)
         }
       ali->length = bits;
     }
+}
+
+ALInt*
+str_to_ali (char* num)
+{
+  int i;
+  int len = strlen(num);
+  ALInt* ten = uint_to_ali(10);
+  ALInt* digit = uint_to_ali(1);
+  ALInt* result = ali_create_size(1);
+  ALInt* temp1;
+  ALInt* temp2;
+  for(i = len-1; i>=0; i++)
+  {
+    temp1 = ali_mult(digit, atoi(num[i]));
+    temp2 = ali_add(temp1, result);
+    ali_delete(result);
+    result = temp2;
+    ali_delete(temp1);
+    temp1 = ali_mult(digit, ten);
+    ali_delete(digit);
+    digit = temp1;
+  }
+  ali_delete (ten);
+  ali_delete (digit);
+  return result;
 }
 
 char *
