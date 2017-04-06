@@ -64,6 +64,7 @@ int isZero(ALInt * x);
 char * strrev(char *str);
 unsigned int uintpow(unsigned int base, unsigned int exp);
 unsigned int getNthComponent(ALInt * x, unsigned int n);
+void multiplyByBASEtopower(ALInt * x, unsigned int powerForBase);
 
 //// Implementations
 void ali_free(ALInt * num){
@@ -164,10 +165,10 @@ ALInt * str2ali (char * s){
     printf("Unable to convert string %s to ALInt: It must contain only digits and a minus sign in leftmost position\n", s);
     return NULL;
   }
-  s = removeLeadingZeros_str(s);
+  char * ss = removeLeadingZeros_str(s);
   //printf("removed zeros %s\n",s);
-  char * head = s;
-  char * tail = s;
+  char * head = ss;
+  char * tail = ss;
   int sig;
   while (tail[0] != '\0'){
     tail++;
@@ -223,6 +224,7 @@ ALInt * str2ali (char * s){
   //printf("str2ali tmp %p",tmp);
   //if (isZero(tmp))
   //  tmp->sign = 0;
+  free(ss);
   return out;
 }
 
@@ -493,28 +495,32 @@ ALInt * ali_multiply (ALInt *a, ALInt *b){
       bcurrent = bcurrent->next;
     }
   }
-  printf("%u %u\n",ahighestbase,bhighestbase);
+  //printf("%u %u\n",ahighestbase,bhighestbase);
   ALInt * sum = newALInt(0);
   sum->head = newnode(NULL, 0);
   sum->tail = sum->head;
   ALInt * tmp1, * tmp2;
-  long product;
-  unsigned int i,j;
+  unsigned long product;
+  unsigned int i,j,k;
   for(i = 0; i <= ahighestbase; i++){
     for(j = 0; j <= bhighestbase; j++){
       product = getNthComponent(a,i)*getNthComponent(b,j);
-      printf("get*get %ld\n",product);
-      product = product*uintpow(BASE, (i+j));
-      printf("after %lu\n",product);
+      //printf("get*get %ld*BASE^%d\n",product,i+j);
       tmp1 = long2ali(product);
-      printf("tmp1 %s\n",ali2str(tmp1));
-      printf("sum %s\n",ali2str(sum));
-      tmp2 = ali_add(sum, tmp1);
-      printf("tmp2 %s\n",ali2str(tmp2));
+      multiplyByBASEtopower(tmp1,i+j);
+      //printf("after %s\n",ali2str(tmp1));
+      //printf("sum1 %s\n",ali2str(sum));
+      //printf("sum=0: %d\ntmp1=0: %d\n",isZero(sum),isZero(tmp1));
+      tmp2 = ali_add(tmp1, sum);
+      //printf("tmp2 %s\n",ali2str(tmp2));
       ali_free(tmp1);
+      //printf("freed tmp1\n");
       ali_free(sum);
+      //printf("freed sum\n");
       sum = tmp2;
-      ali_free(tmp2);
+      //printf("sum %s\n",ali2str(sum));
+      //ali_free(tmp2);
+      //printf("freed tmp2\n");
     }
   }
   sum->sign = a->sign*b->sign;
@@ -572,22 +578,9 @@ int compare(ALInt *a, ALInt *b){
 }
 
 ALInt * ali_copy(ALInt * x){
-  ALInt * out = newALInt(x->sign);
-  intnode * current = x->head;
-  intnode * out_current = NULL;
-  int isFirst = 1;
-  while (current != NULL){
-    if (isFirst){
-      out->head = newnode(NULL, current->x);
-      out_current = out->head;
-      isFirst = 0;
-    }else{
-      out_current->next = newnode(out_current, current->x);
-      out_current = out_current->next;
-    }
-    current = current->next;
-  }
-  out->tail = out_current;
+  char * s = ali2str(x);
+  ALInt * out = str2ali(s);
+  free(s);
   return out;
 }
 
@@ -630,19 +623,14 @@ char * removeLeadingZeros_str(char * s){
   while ((front[1] != '\0')&&((front[0]=='0')||(front[0] == '-')))
     front++;
   char * end = front;
-  if (front != s){
-    while (end[0] != '\0')
-      end++;
-    if (*(end-1) == 'l'){
-      *(end-1) = '\0';
-    }
-  }
+  while (end[0] != '\0')
+    end++;
+  //printf("end - front %u\n",end-front);
   char * new = malloc(((end-front)+2)*sizeof(char));
+  strcpy(new, front);
   if (s[0] == '-'){
+    memmove(new+1,new,(end-front)+1);
     new[0] = '-';
-    strcpy(new+1,front);
-  }else{
-    strcpy(new, front);
   }
   return new;
 }
@@ -729,6 +717,29 @@ int isZero(ALInt * x){
    }
    return 0;
  }
+
+void multiplyByBASEtopower(ALInt * x, unsigned int powerForBase){
+  if (powerForBase > 0){
+    intnode * currenthead = x->head;
+    intnode * current = NULL;
+    unsigned int i = 0;
+    int isFirst = 1;
+    while (i < powerForBase){
+      //printf("loop counter %d\n",i);
+      if (isFirst){
+        x->head = newnode(NULL,0);
+        current = x->head;
+        isFirst = 0;
+      }else{
+        current->next = newnode(current,0);
+        current = current->next;
+      }
+      i++;
+    }
+    current->next = currenthead;
+    currenthead->prev = current;
+  }
+}
  
 int main(){
   printf("INT_MAX = %d\nLINT_MAX = %ld\n",INT_MAX,LONG_MAX);
@@ -754,21 +765,25 @@ int main(){
 */
   // operations tests
   printf("Ops Tests\n");
-  for(i=0; i< 1; i++){
+  char * s1;
+  for(i=0; i< 5; i++){
     printf("Input n: %s\n",x[i]);
     printf("Input m: %s\n",x[i+1]);
     ALInt * n = str2ali(x[i]);
     ALInt * m = str2ali(x[i+1]);
-    //ALInt * a = ali_add(n,m);
-    //printf("n+m=%s\n",ali2str(a));
-    //ALInt * s = ali_subtract(n,m);
-    //printf("n-m=%s\n",ali2str(s));
+    ALInt * a = ali_add(n,m);
+    s1 = ali2str(a);
+    printf("n+m=%s\n",s1);
+    ALInt * s = ali_subtract(n,m);
+    printf("n-m=%s\n",ali2str(s));
     ALInt * p = ali_multiply(n,m);
     printf("n*m=%s\n\n",ali2str(p));
     ali_free(n);
     ali_free(p);
-    //ali_free(a);
-    //ali_free(s);
+    ali_free(a);
+    ali_free(s);
+    ali_free(m);
+    free(s1);
   }
   return 0;
 }
