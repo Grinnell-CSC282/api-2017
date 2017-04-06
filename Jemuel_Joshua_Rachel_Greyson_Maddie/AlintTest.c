@@ -50,6 +50,10 @@ void aliConvTests()
   assert(ali2long(largeNegIntTest) == -28377678342.0);
   assert(ali2int(largeNegIntTest) == -28377678342);
   assert(ali2double(largeNegIntTest) == -28377678342.0);
+
+
+	assert(ali2int(ali_remainder(largePosIntTest, posIntTest) == 28377678342%37);
+
 }
 
 int main()

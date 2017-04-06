@@ -221,6 +221,43 @@ ali_multiply (ALInt *a, ALInt *b)
 ALInt *
 ali_quotient (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		ALInt *ret = (ALInt *) malloc(sizeof(ALInt));
+		if(a->sign != b->sign)
+		{
+			ret->sign = -1;
+		} else
+		{
+			ret->sign = 1;
+		}
+		ALIntDigit *cur = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+		cur->val = 0;
+		ret->front = cur;
+		int divisor = ali2int(b);
+		int num = 0;
+		ALIntDigit *iteration = a->front;
+		while(iteration != NULL)
+		{
+			while(num<divisor && iteration != NULL)
+			{
+				cur->next = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+				ALIntDigit *prev = cur;
+				cur = cur->next;
+				cur->prev = prev;
+				cur->value = 0;
+				num = num *10;
+				num += iteration->val;
+				iteration = iteration->next;
+			}
+			num -= divisor;
+			cur->value++;
+		}
+		ret->back = cur;
+		
+	}
+
+	return ret;
 
 }
 
@@ -232,5 +269,25 @@ ali_quotient (ALInt *a, ALInt *b)
 ALInt *
 ali_remainder (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		int divisor = ali2int(b);
+		int num = 0;
+		ALIntDigit *iteration = a->front;
+		while(iteration != NULL)
+		{
+			while(num<divisor && iteration != NULL)
+			{
+				num = num *10;
+				num += iteration->val;
+				iteration = iteration->next;
+			}
+			num -= divisor;
+		}
+	}
+
+	return int2ali(num);
 
 }
+	
+		
