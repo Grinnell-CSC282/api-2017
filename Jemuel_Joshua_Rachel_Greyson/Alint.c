@@ -201,7 +201,52 @@ double ali2double (ALInt *a)
 ALInt *
 ali_add (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		if(a->sign != b->sign)
+		{
+			b->sign = a->sign;
+			ALInt *r = ali_subtract(a, b);
+			b->sign = b->sign * -1;
+			return r;
+		}
+		ALInt *ret = (ALInt *) malloc(sizeof(ALInt));
+		ALIntDigit *cur = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+		ret->back = cur;
+		ret->front = ali_add_helper(cur, a->back, b->back, 0);
+		ret->sign = a->sign;
+		cur = ret->front;
+		ret->ndigits = 1;
+		while(cur != ret->back)
+		{
+			cur = cur->next;
+			ret->ndigits ++;
+		}
+	}
+	return ret;
+}
 
+ALInt *
+ali_add_helper(ALIntDigit *dest, ALIntDigit *a, ALIntDigit *b, int remainder)
+{
+	if(a != NULL && b != NULL)
+	{
+		dest->val = (a->val + b->val + remainder)%10;
+		remainder = (a->val + b->val + remainder)/10;
+	} else if (a == NULL && b != NULL)
+	{
+		dest->value = (b->val + remainder)%10;
+		remainder = (b->val + remainder)/10;
+	} else if (a != NULL && b == NULL){
+		dest->value = (b->val + remainder)%10;
+		remainder = (b->val + remainder)/10;
+	} else {
+		dest->value = remainder;
+		return dest;
+	}
+	dest->prev = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+	dest->prev->next = dest;
+	return ali_add_helper(dest, a->prev, b->prev, remainder);
 }
 
 /**
