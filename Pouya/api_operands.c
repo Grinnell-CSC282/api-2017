@@ -36,7 +36,14 @@ api_true_compare (APInt * a, APInt * b)
   // no difference in sign, calling api_compare
   else
     {
-      return api_compare (a, b);
+        if (a->sign == positive)
+        {
+          return api_compare(a,b);
+        }
+        else
+        {
+          return -api_compare(a,b);
+        }
     }				// else
 }
 

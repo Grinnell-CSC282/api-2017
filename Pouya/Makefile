@@ -18,7 +18,7 @@ libarray_operations.a: array_operations_addLast.o array_operations_free.o \
 	ar rv $@ $^
 
 libapi.a: api_int_trans.o api_free.o  api_str_trans.o api_operands.o \
-	 api_long_trans.o api_double_trans.c
+	 api_long_trans.o api_double_trans.o
 	rm -f $@
 	ar rv $@ $^
 

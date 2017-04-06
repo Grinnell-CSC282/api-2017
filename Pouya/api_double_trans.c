@@ -15,29 +15,36 @@ api2double (APInt * i)
     {
       return 0;
     }				// if
-  APInt * api_max = double2api(DBL_MAX);
+  APInt *api_max = double2api (DBL_MAX);
   // incase our number is equal to api_max
-  if (api_compare(api_max, i) == 0)
-  {
-    api_free (api_max);
-    return LONG_MAX;
-  }
+  if (api_compare (api_max, i) == 0)
+    {
+      api_free (api_max);
+      if (i->sign == positive)
+      {
+        return DBL_MAX;
+      }
+      else
+      {
+        return -DBL_MAX;
+      }
+    }
   // in case our number is bigger, we can return infinity
-  else if (api_compare(api_max, i) == -1)
-  {
-    api_fre(api_max);
-    if (i->sign == positive)
+  else if (api_compare (api_max, i) == -1)
     {
-      return 1.0 / 0.0;
+      api_free (api_max);
+      if (i->sign == positive)
+	{
+	  return 1.0 / 0.0;
+	}
+      else
+	{
+	  return -1.0 / 0.0;
+	}
     }
-    else
-    {
-      return -1.0 / 0.0;
-    }
-  }
   api_free (api_max);
-  double ret = 0;			// the return value;
-  int power = 1;		// keeping track of our power, more efficient than
+  double ret = 0;		// the return value;
+  double power = 1;		// keeping track of our power, more efficient than
   //    calling pow each time
   // for loop to extract an integer from our array_list
   for (int j = 0; j < i->list->size; j++)
@@ -73,10 +80,10 @@ double2api (double i)
       i *= -1;
     }				// else
   api->list = array_list_init ();
-  while (i > 1)
+  while (i >= 1)
     {
-      add_last (api->list, i % BASE);
-      i = (i - (i % BASE)) / BASE;
+      add_last (api->list, ((int) i) % BASE);
+      i = (i - (((int) i) % BASE)) / BASE;
     }				// while
   return api;
 }

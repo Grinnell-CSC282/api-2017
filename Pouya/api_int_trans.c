@@ -15,15 +15,23 @@ api2int (APInt * i)
     {
       return 0;
     }				// if
-  APInt * api_max = int2api(INT_MAX);
+  APInt *api_max = int2api (INT_MAX);
   // incase our number is bigger or equal to api_max
-  if (api_compare(api_max, i) != 1)
-  {
-    api_free (api_max);
-    return INT_MAX;
-  }
+  if (api_true_compare (api_max, i) != 1)
+    {
+      api_free (api_max);
+        return INT_MAX;
+    }
+  api_free(api_max);
+  APInt * api_min = int2api(INT_MIN);
+  // incase our number is smaller or equal to api_min
+  if (api_true_compare (api_min, i) != -1)
+    {
+      api_free (api_min);
+      return INT_MIN;
 
-  api_free (api_max);
+    }
+  api_free (api_min);
   int ret = 0;			// the return value;
   int power = 1;		// keeping track of our power, more efficient than
   //    calling pow each time
