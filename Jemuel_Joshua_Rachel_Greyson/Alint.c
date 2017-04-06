@@ -151,6 +151,7 @@ ali2long (ALInt *a)
   return result;
 }
 
+/* Rachel's Implementation */
 /**
  * Convert a to string representation.  Returns a newly-allocated
  * string.
@@ -158,7 +159,21 @@ ali2long (ALInt *a)
 char *
 ali2str (ALInt *a)
 {
+  //create our str and ch
+  //charlie says the (char *) is not essential, but is safer to make
+  //sure you malloc the right amount
+  char * result = (char *) malloc (sizeof (char) * a.ndigits);
+  char * ch = (char *) malloc (sizeof (char));
 
+  //create a cur and adding each digit to str
+struct ALIntDigit * cur = a.front;
+  while(cur != NULL) {
+
+    //using strlcat because no fear of buffer overflow
+    strlcat(result, ch);
+    cur = cur.next;
+    )
+      return result;
 }
 
 /**
@@ -173,12 +188,10 @@ ali2int (ALInt *a)
 /**
  * Find the double that corresponds to a.
  */
-double
-ali2double (ALInt *a)
+double ali2double (ALInt *a)
 {
   return (double) ali2long(a);
 }
-
 
 /**
  * Add two arbitrarily large integers, creating a newly allocated
@@ -188,7 +201,52 @@ ali2double (ALInt *a)
 ALInt *
 ali_add (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		if(a->sign != b->sign)
+		{
+			b->sign = a->sign;
+			ALInt *r = ali_subtract(a, b);
+			b->sign = b->sign * -1;
+			return r;
+		}
+		ALInt *ret = (ALInt *) malloc(sizeof(ALInt));
+		ALIntDigit *cur = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+		ret->back = cur;
+		ret->front = ali_add_helper(cur, a->back, b->back, 0);
+		ret->sign = a->sign;
+		cur = ret->front;
+		ret->ndigits = 1;
+		while(cur != ret->back)
+		{
+			cur = cur->next;
+			ret->ndigits ++;
+		}
+	}
+	return ret;
+}
 
+ALInt *
+ali_add_helper(ALIntDigit *dest, ALIntDigit *a, ALIntDigit *b, int remainder)
+{
+	if(a != NULL && b != NULL)
+	{
+		dest->val = (a->val + b->val + remainder)%10;
+		remainder = (a->val + b->val + remainder)/10;
+	} else if (a == NULL && b != NULL)
+	{
+		dest->value = (b->val + remainder)%10;
+		remainder = (b->val + remainder)/10;
+	} else if (a != NULL && b == NULL){
+		dest->value = (b->val + remainder)%10;
+		remainder = (b->val + remainder)/10;
+	} else {
+		dest->value = remainder;
+		return dest;
+	}
+	dest->prev = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+	dest->prev->next = dest;
+	return ali_add_helper(dest, a->prev, b->prev, remainder);
 }
 
 /**
@@ -221,6 +279,43 @@ ali_multiply (ALInt *a, ALInt *b)
 ALInt *
 ali_quotient (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		ALInt *ret = (ALInt *) malloc(sizeof(ALInt));
+		if(a->sign != b->sign)
+		{
+			ret->sign = -1;
+		} else
+		{
+			ret->sign = 1;
+		}
+		ALIntDigit *cur = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+		cur->val = 0;
+		ret->front = cur;
+		int divisor = ali2int(b);
+		int num = 0;
+		ALIntDigit *iteration = a->front;
+		while(iteration != NULL)
+		{
+			while(num<divisor && iteration != NULL)
+			{
+				cur->next = (ALIntDigit *) malloc(sizeof(ALIntDigit));
+				ALIntDigit *prev = cur;
+				cur = cur->next;
+				cur->prev = prev;
+				cur->value = 0;
+				num = num *10;
+				num += iteration->val;
+				iteration = iteration->next;
+			}
+			num -= divisor;
+			cur->value++;
+		}
+		ret->back = cur;
+		
+	}
+
+	return ret;
 
 }
 
@@ -232,5 +327,25 @@ ali_quotient (ALInt *a, ALInt *b)
 ALInt *
 ali_remainder (ALInt *a, ALInt *b)
 {
+	if(a != NULL && b != NULL)
+	{
+		int divisor = ali2int(b);
+		int num = 0;
+		ALIntDigit *iteration = a->front;
+		while(iteration != NULL)
+		{
+			while(num<divisor && iteration != NULL)
+			{
+				num = num *10;
+				num += iteration->val;
+				iteration = iteration->next;
+			}
+			num -= divisor;
+		}
+	}
+
+	return int2ali(num);
 
 }
+	
+		

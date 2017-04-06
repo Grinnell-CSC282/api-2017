@@ -8,22 +8,16 @@
 #ifndef __APILIB_H_
 #define __APILIB_H__
 
-// +---------+-------------------------------------------------------
-// | Structs |
-// +---------+
-
-typedef struct ap_int {
-  int stub;
-} APInt;
 
 // +-----------+---------------------------------------------
 // | Constants |
 // +-----------+
 
-APInt API_ZERO;
-APInt API_ONE;
-APInt API_TWO;
-APInt API_NEG_ONE;
+APInt* API_ZERO;
+APInt* API_ONE;
+APInt* API_TWO;
+APInt* API_NEG_ONE;
+APInt* API_NEG_TWO;
 
 // +-------------------+---------------------------------------------
 // | Library Functions |
@@ -136,9 +130,9 @@ APInt * api_remainder (APInt *a, APInt *b);
 APInt * api_quotient (APInt *a, APInt *b);
 
 /**
- * Compare two API values. Return -1 if the first is less than the 
- * second, 0 if they are the same, and 1 if the first is greater than 
- * the second
+ * Compare two API values. Return a negative number  if the first is 
+ * less than the  second, 0 if they are the same, and a positive number
+ * if the first is greater than the second
  */
 int * api_cmp (APInt *a, APInt *b);
 
