@@ -4,27 +4,27 @@
 #include <stdio.h>
 #include <limits.h>
 /**
-* Operations to turn an APInt into an int and vice versa.
+* Operations to turn an APInt into an long and vice versa.
 * Caution: if the user attempts to turn an APInt that is bigger than the bounds
-*   of int, program return INT_MAX;
+*   of int, behaviour is undefined for now.
 */
-int
-api2int (APInt * i)
+long
+api2long (APInt * i)
 {
   if (i->list->size == 0)
     {
       return 0;
     }				// if
-  APInt * api_max = int2api(INT_MAX);
+  APInt * api_max = long2api(LONG_MAX);
   // incase our number is bigger or equal to api_max
   if (api_compare(api_max, i) != 1)
   {
     api_free (api_max);
-    return INT_MAX;
+    return LONG_MAX;
   }
 
   api_free (api_max);
-  int ret = 0;			// the return value;
+  long ret = 0;			// the return value;
   int power = 1;		// keeping track of our power, more efficient than
   //    calling pow each time
   // for loop to extract an integer from our array_list
@@ -46,7 +46,7 @@ api2int (APInt * i)
 
 
 APInt *
-int2api (int i)
+long2api (long i)
 {
   APInt *api = (APInt *) malloc (sizeof (APInt));	// making our number
   // finding out about the sign
