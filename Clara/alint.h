@@ -33,16 +33,10 @@ typedef struct ALInt {
 // | Constants |
 // +-----------+
 
-#define BASE 16
+#define BASE 10
 
-#define INT_MAX 1000000
-#define INT_MIN 1000000
-
-#define LONG_MAX 1000000
-#define LONG_MIN 1000000
-
-#define DOUBLE_MAX 1000000.0
-#define DOUBLE_MIN 1000000.0
+#define DOUBLE_MIN -9223372036854775808.0
+#define DOUBLE_MAX 9223372036854775807.0
 
 
 // +------------+----------------------------------------------------
