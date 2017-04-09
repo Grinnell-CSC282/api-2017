@@ -26,6 +26,8 @@
  */
 ALInt * ali_init() {
   // STUB
+  // What is this even supposed to do
+  return NULL;
 }
 
 /**
@@ -50,6 +52,7 @@ void ali_free(ALInt * i) {
  */
 void ali_cleanup() {
   // STUB
+  // Wait how am I supposed to find allocated ALInts to free them
 }
 
 
