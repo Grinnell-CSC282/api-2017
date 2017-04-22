@@ -6,6 +6,7 @@ int main(int argc, char * argv[]) {
   ALInt * ali1 = int2ali(213);
   ALInt * ali2 = int2ali(5042);
   ALInt * ali3 = int2ali(-42);
+  ALInt * ali4 = int2ali(-162);
 
   // checking pointers
   assert (ali2->first->value == 5);
@@ -29,9 +30,11 @@ int main(int argc, char * argv[]) {
 
   assert (ali2int(double2ali(120.6)) == 120);
   assert (ali2int(int2ali(-120)) == -120);
-  assert (ali2int(long2ali(42)) == 42);
+  assert (ali2int(long2ali(45)) == 45);
 
-  //assert (strcmp(ali2str(ali_add(ali1, ali2)), "5255") == 0);
+  // checking ali_add
+  assert (strcmp(ali2str(ali_add(ali1, ali2)), "5255") == 0);
+  assert (strcmp(ali2str(ali_add(ali3, ali4)), "-204") == 0);
 
   return 0;
 }

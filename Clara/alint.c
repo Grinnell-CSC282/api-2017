@@ -8,6 +8,8 @@
 
 // include standard library for NULL, malloc, etc.
 #include <stdlib.h>
+// include library for booleans
+#include <stdbool.h>
 // include i/o library
 #include <stdio.h>
 // include string library
@@ -68,16 +70,42 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
   int remainder = 0;
   int buffer = 0;
 
+  // create sum structure
   ALInt * sum = (ALInt *) malloc (sizeof (ALInt));
-  struct ALIntDigit * ptrNew = NULL;
-  sum->last = ptrNew;
+  struct ALIntDigit * ptrNew;
+  struct ALIntDigit * temp;
+  bool first = true;
   
-  while(ptrA != NULL && ptrB != NULL) {
-    // allocate new digit at the left end of sum and move first ptr to match
-    ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
-    sum->first = ptrNew;
+  // if we've got one negative, use subtraction method instead
+  if(a->sign == 1 && b->sign == 0) {
+    return ali_subtract(a, b);
+  } else if (a->sign == 0 && b->sign == 1) {
+    return ali_subtract(b, a);
+  // if we've got two positives, we're positive
+  } else if(a->sign == 1 && b->sign == 1) {
+    sum->sign = 1;
+  // if two negatives, we're negative
+  } else {
+    sum->sign = 0;
+  }
 
-/* !!! HERE !!! says it can't access ptrB->value on 3rd run through? */
+  while(ptrA != NULL && ptrB != NULL) {
+    // if first time around, set things up a little differently
+    if(first) {
+      ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+      sum->last = ptrNew;
+      sum->first = ptrNew;
+      ptrNew->next = NULL;
+      first = false;
+    } else {
+      // allocate new digit at the left end of sum and assign ptrs to match
+      ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+      temp = sum->first;
+      sum->first = ptrNew;
+      sum->first->next = temp;
+      temp->prev = ptrNew;
+    }
+
     remainder = (ptrA->value + ptrB->value) % BASE;
     // digit equals current remainder plus previous buffer
     ptrNew->value = remainder + buffer;
@@ -85,12 +113,35 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
     // calculate buffer for next round
     buffer = (ptrA->value + ptrB->value) / BASE;
 
+    // add one to the digit count
     sum->ndigits++;
     // move the pointers to the left
     ptrA = ptrA->prev;
     ptrB = ptrB->prev;
   }
 
+  // deal with any remaining digits in either number
+  if(ptrA != NULL) {
+    ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+    // assign pointers
+    temp = sum->first;
+    sum->first = ptrNew;
+    sum->first->next = temp;
+    temp->prev = ptrNew;
+    // compute value and add one to the digit count
+    ptrNew->value = buffer + ptrA->value;
+    sum->ndigits++;
+  } else if(ptrB != NULL) {
+    ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+    // assign pointers
+    temp = sum->first;
+    sum->first = ptrNew;
+    sum->first->next = temp;
+    temp->prev = ptrNew;
+    // compute value and add one to the digit count
+    ptrNew->value = buffer + ptrB->value;
+    sum->ndigits++;
+  }
   return sum;
 }
 
@@ -99,7 +150,9 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
  * newly allocated ALInt. Client is responsible for freeing any
  * memory associated with the new value using ali_free.
  */
-ALInt * ali_subtract(ALInt * a, ALInt * b);
+ALInt * ali_subtract(ALInt * a, ALInt * b) {
+  return NULL;
+}
 
 /**
  * Multiply two arbitrarily large integers together, creating a
