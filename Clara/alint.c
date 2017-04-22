@@ -68,7 +68,7 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
   int remainder = 0;
   int buffer = 0;
 
-  ALInt * sum = ali_init();
+  ALInt * sum = (ALInt *) malloc (sizeof (ALInt));
   struct ALIntDigit * ptrNew = NULL;
   sum->last = ptrNew;
   
@@ -135,6 +135,8 @@ ALInt * int2ali (int i) {
   // set sign value (positive or negative)
   if(i < 0) {
     a->sign = 0;
+    // if i is negative, make it not negative
+    i = abs(i);
   }
   else {
     a->sign = 1;
@@ -186,6 +188,8 @@ ALInt * long2ali (long i) {
   // set sign value (positive or negative)
   if(i < 0) {
     a->sign = 0;
+    // if i is negative, make it not negative
+    i = abs(i);
   }
   else {
     a->sign = 1;
@@ -237,6 +241,8 @@ ALInt * double2ali (double i) {
   // set sign value (positive or negative)
   if(i < 0) {
     a->sign = 0;
+    // if i is negative, make it not negative
+    i = abs(i);
   }
   else {
     a->sign = 1;
@@ -261,7 +267,7 @@ ALInt * double2ali (double i) {
 
     // divide by 10 to move left
     i /= 10;
-  } while(i != 0);
+  } while(i >= 1);
 
   // set first pointer
   a->first = cur;
@@ -309,6 +315,11 @@ int ali2int (ALInt * a) {
     ptr = ptr->next;
     digit -= 1;
   }
+  
+  // if the number is negative, multiply by -1
+  if(a->sign == 0) {
+    i *= -1;
+  }
 
   // return i or an upper/lower limit
   if(i < INT_MIN) {
@@ -337,6 +348,11 @@ long ali2long (ALInt * a) {
     l += ptr->value * pow(10, digit);
     ptr = ptr->next;
     digit -= 1;
+  }
+
+  // if the number is negative, multiply by -1
+  if(a->sign == 0) {
+    l *= -1;
   }
 
   // return l or an upper/lower limit
@@ -368,6 +384,11 @@ double ali2double (ALInt * a) {
     digit -= 1;
   }
 
+  // if the number is negative, multiply by -1
+  if(a->sign == 0) {
+    d *= -1;
+  }
+
   // return d or an upper/lower limit
   if(d < DOUBLE_MIN) {
     return (double) DOUBLE_MIN;
@@ -394,8 +415,14 @@ char * ali2str (ALInt * a) {
     // convert digit to char*
     sprintf(ch, "%hu", ptr->value);
     // append to str
-    strcat(str, ch);
+    str = strcat(str, ch);
     ptr = ptr->next;
+  }
+
+  // if the number is negative, append a (-)
+  if(a->sign == 0) {
+    sprintf(ch, "-");
+    str = strcat(ch, str);
   }
 
   return str;
