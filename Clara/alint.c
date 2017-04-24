@@ -78,15 +78,21 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
   
   // if we've got one negative, use subtraction method instead
   if(a->sign == 1 && b->sign == 0) {
+    b->sign = 1;
+    printf("+/-:  %s, %s\n", ali2str(a), ali2str(b));
     return ali_subtract(a, b);
-  } else if (a->sign == 0 && b->sign == 1) {
+  } else if(a->sign == 0 && b->sign == 1) {
+    a->sign = 1;
+    printf("-/+:  %s, %s\n", ali2str(a), ali2str(b));
     return ali_subtract(b, a);
   // if we've got two positives, we're positive
   } else if(a->sign == 1 && b->sign == 1) {
     sum->sign = 1;
+    printf("+/+:  %s, %s\n", ali2str(a), ali2str(b));
   // if two negatives, we're negative
   } else {
     sum->sign = 0;
+    printf("-/-:  %s, %s\n", ali2str(a), ali2str(b));
   }
 
   while(ptrA != NULL && ptrB != NULL) {
@@ -121,7 +127,7 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
   }
 
   // deal with any remaining digits in either number
-  if(ptrA != NULL) {
+  while(ptrA != NULL) {
     ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
     // assign pointers
     temp = sum->first;
@@ -131,7 +137,10 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
     // compute value and add one to the digit count
     ptrNew->value = buffer + ptrA->value;
     sum->ndigits++;
-  } else if(ptrB != NULL) {
+    // move pointer to the left
+    ptrA = ptrA->prev;
+  } 
+  while(ptrB != NULL) {
     ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
     // assign pointers
     temp = sum->first;
@@ -141,6 +150,8 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
     // compute value and add one to the digit count
     ptrNew->value = buffer + ptrB->value;
     sum->ndigits++;
+    // move pointer to the left
+    ptrB = ptrB->prev;
   }
   return sum;
 }
@@ -151,7 +162,128 @@ ALInt * ali_add(ALInt * a, ALInt * b) {
  * memory associated with the new value using ali_free.
  */
 ALInt * ali_subtract(ALInt * a, ALInt * b) {
-  return NULL;
+  struct ALIntDigit * ptrA = a->last;
+  struct ALIntDigit * ptrB = b->last;
+  int difference = 0;
+
+  // create sum structure
+  ALInt * dif = (ALInt *) malloc (sizeof (ALInt));
+  struct ALIntDigit * ptrNew;
+  struct ALIntDigit * temp;
+  bool first = true;
+  
+  // if the first number is negative, use addition method instead
+  if(a->sign == 0 && b->sign == 1) {
+    b->sign = 0;
+    return ali_add(a, b);
+  // if the second number is negative, use addition method instead
+  } else if (a->sign == 1 && b->sign == 0) {
+    b->sign = 1;
+    return ali_add(a, b);
+  // if we've got two positives, determine resulting sign
+  } else if(a->sign == 1 && b->sign == 1) {
+    // if a has more digits, the result will be positive
+    if(a->ndigits > b->ndigits) {
+      dif->sign = 1;
+    // if b has more, result will be negative, and we want to switch a & b
+    //   to make subtracting easier
+    } else if(a->ndigits < b->ndigits) {
+      dif->sign = 0;
+      temp = ptrA;
+      ptrA = ptrB;
+      ptrB = temp;
+    // if they have the same number of digits...
+    } else {
+      struct ALIntDigit * signPtrA = a->first;
+      struct ALIntDigit * signPtrB = b->first;
+      // find first instance of unequal digits
+      while((signPtrA != NULL) && (signPtrA->value == signPtrB->value)) {
+        signPtrA = signPtrA->next;
+        signPtrB = signPtrB->next;
+      }
+      // if we reach the end and all digits are equal, we know we'll get zero
+      if(signPtrA == NULL) {
+        ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+        dif->last = ptrNew;
+        dif->first = ptrNew;
+        dif->sign = 1;
+        dif->ndigits = 1;
+        ptrNew->next = NULL;
+        ptrNew->prev = NULL;
+        ptrNew->value = 0;
+        return dif;
+      // otherwise, compare the digits we found
+      } else {
+        if(signPtrA->value > signPtrB->value) {
+          dif->sign = 1;
+        // if b is greater, result will be negative, and we want to switch a & b
+        //   to make subtracting easier
+        } else {
+          dif->sign = 0;
+          temp = ptrA;
+          ptrA = ptrB;
+          ptrB = temp;
+        }
+      }
+    }
+  // if two negatives, we need to switch positions
+  } else {
+    a->sign = 1;
+    b->sign = 1;
+    return ali_subtract(b, a);
+  }
+
+  while(ptrB != NULL) {
+    // if first time around, set things up a little differently
+    if(first) {
+      ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+      dif->last = ptrNew;
+      dif->first = ptrNew;
+      ptrNew->next = NULL;
+      first = false;
+    } else {
+      // allocate new digit at the left end of dif and assign ptrs to match
+      ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+      temp = dif->first;
+      dif->first = ptrNew;
+      dif->first->next = temp;
+      temp->prev = ptrNew;
+    }
+
+    // if the subtractee (ptrA) is smaller than the subtractor, borrow from the 
+    //   next column
+    if(ptrA->value < ptrB->value) {
+      ptrA->value += BASE;
+      ptrA->prev->value -= 1;
+    }
+
+    difference = ptrA->value - ptrB->value;
+    // digit equals difference
+    ptrNew->value = difference;
+
+    // add one to the digit count
+    dif->ndigits++;
+    // move the pointers to the left
+    ptrA = ptrA->prev;
+    ptrB = ptrB->prev;
+  }
+
+  // deal with any remaining digits in the larger (first) number
+  while(ptrA != NULL) {
+    ptrNew = (struct ALIntDigit *) malloc (sizeof (struct ALIntDigit));
+    // assign pointers
+    temp = dif->first;
+    dif->first = ptrNew;
+    dif->first->next = temp;
+    temp->prev = ptrNew;
+    // add value and add one to the digit count
+    ptrNew->value = ptrA->value;
+    dif->ndigits++;
+    // move pointer to the left
+    ptrA = ptrA->prev;
+  }
+
+  return dif;
 }
 
 /**
@@ -159,7 +291,9 @@ ALInt * ali_subtract(ALInt * a, ALInt * b) {
  * newly allocated ALInt. Client is responsible for freeing any
  * memory associated with the new value using ali_free.
  */
-ALInt * ali_multiply(ALInt * a, ALInt * b);
+ALInt * ali_multiply(ALInt * a, ALInt * b) {
+  return NULL;
+}
 
 /**
  * Divide one arbitrarily large integer by another, returning a
@@ -167,7 +301,9 @@ ALInt * ali_multiply(ALInt * a, ALInt * b);
  * responsible for freeing any memory associated with the new value
  * using ali_free.
  */
-ALInt * ali_quotient(ALInt * a, ALInt * b);
+ALInt * ali_quotient(ALInt * a, ALInt * b) {
+  return NULL;
+}
 
 /**
  * Divide one arbitrarily large integer by another, returning a
@@ -175,7 +311,9 @@ ALInt * ali_quotient(ALInt * a, ALInt * b);
  * responsible for freeing any memory associated with the new value
  * using ali_free.
  */
-ALInt * ali_remainder(ALInt * a, ALInt * b);
+ALInt * ali_remainder(ALInt * a, ALInt * b) {
+  return NULL;
+}
 
 
 
